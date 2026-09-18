@@ -1,0 +1,67 @@
+/* ============================================================
+   Dwellers Engineering — design tokens
+   Palette sampled directly from the company profile booklet:
+   black #000000, signal gold #FFDE59, crest bronze #B29629.
+   ============================================================ */
+
+:root {
+  /* --- Surface --------------------------------------------- */
+  --ink:        #050505;  /* page */
+  --ink-raise:  #0B0B0C;  /* raised panel */
+  --ink-sunk:   #000000;  /* recessed / full-bleed */
+  --ink-line:   #1C1C1D;  /* hairline on black */
+  --ink-line-2: #2A2A2C;  /* stronger hairline */
+
+  /* --- Brand ----------------------------------------------- */
+  --gold:       #FFDE59;  /* signal gold — headings, live elements */
+  --gold-deep:  #E3BE33;
+  --bronze:     #B29629;  /* crest bronze — linework, rules, frames */
+  --bronze-dim: #6B5A1B;  /* quiet drafting linework */
+
+  /* --- Neutrals -------------------------------------------- */
+  --bone:       #F3F1EA;  /* primary text on black */
+  --bone-2:     #B6B4AC;  /* secondary text */
+  --bone-3:     #77746C;  /* captions, disabled */
+  --concrete:   #8E8D86;  /* material tone, shared with the 3D scene */
+
+  /* --- Type ------------------------------------------------ */
+  --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:    'Instrument Sans', system-ui, -apple-system, sans-serif;
+  --font-tech:    'Azeret Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Fluid display scale — clamp() so nothing needs a breakpoint. */
+  --t-hero:  clamp(2.75rem, 11.5vw, 10.5rem);
+  --t-h1:    clamp(2.1rem, 6.4vw, 5.25rem);
+  --t-h2:    clamp(1.6rem, 3.8vw, 3rem);
+  --t-h3:    clamp(1.15rem, 2vw, 1.6rem);
+  --t-body:  clamp(0.975rem, 0.34vw + 0.9rem, 1.12rem);
+  --t-small: 0.8125rem;
+  --t-tech:  0.6875rem;  /* drafting annotations */
+
+  /* --- Space ----------------------------------------------- */
+  --gutter:     clamp(1.125rem, 4vw, 4.5rem);
+  --sheet-pad:  clamp(1rem, 2.2vw, 2rem); /* inset of the drawing frame */
+  --band:       clamp(4.5rem, 11vh, 9.5rem); /* vertical section rhythm */
+  --max:        84rem;
+
+  /* --- Motion ---------------------------------------------- */
+  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --dur-fast:  180ms;
+  --dur:       420ms;
+  --dur-slow:  900ms;
+
+  --z-frame: 40;
+  --z-nav:   60;
+  --z-menu:  70;
+}
+
+/* Reduced motion: collapse durations rather than removing transitions,
+   so state changes still read as state changes. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur: 1ms;
+    --dur-slow: 1ms;
+  }
+}

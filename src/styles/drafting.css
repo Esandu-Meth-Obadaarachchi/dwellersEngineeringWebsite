@@ -1,0 +1,212 @@
+/* ============================================================
+   The drafting system.
+
+   Every structural device on this site is borrowed from a real
+   structural drawing sheet: the frame, the title block, the grid
+   bubbles running down the margin, dimension strings, and section
+   hatching. They are load-bearing, not decorative — each one
+   carries a number or a label that is actually true of the
+   content it sits beside.
+   ============================================================ */
+
+/* --- 1. The sheet frame ------------------------------------
+   A hairline border inset from the viewport, with registration
+   ticks at each corner. Fixed, so the whole site reads as one
+   continuous drawing being scrolled past. */
+
+.sheet-frame {
+  position: fixed;
+  inset: var(--sheet-pad);
+  z-index: var(--z-frame);
+  pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--bronze) 26%, transparent);
+}
+
+.sheet-frame::before,
+.sheet-frame::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  /* Corner registration ticks: short strokes that overrun the corners. */
+  background:
+    linear-gradient(var(--bronze), var(--bronze)) 0 0 / 1px 18px no-repeat,
+    linear-gradient(var(--bronze), var(--bronze)) 0 0 / 18px 1px no-repeat,
+    linear-gradient(var(--bronze), var(--bronze)) 100% 0 / 1px 18px no-repeat,
+    linear-gradient(var(--bronze), var(--bronze)) 100% 0 / 18px 1px no-repeat;
+}
+.sheet-frame::after { transform: scaleY(-1); }
+
+@media (max-width: 40rem) {
+  .sheet-frame { display: none; }
+}
+
+/* --- 2. Technical label ------------------------------------
+   The mono utility voice. Used for eyebrows, annotations,
+   dimensions and any number the reader is meant to trust. */
+
+.tech {
+  font-family: var(--font-tech);
+  font-size: var(--t-tech);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bronze);
+  line-height: 1.4;
+}
+
+.tech--bone { color: var(--bone-3); }
+.tech--gold { color: var(--gold); }
+
+/* --- 3. Title block ----------------------------------------
+   Sits above every section. Mirrors the stamp in the corner of a
+   drawing sheet: sheet number, title, and revision. */
+
+.title-block {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  padding-block-end: 1.1rem;
+  border-block-end: 1px solid var(--ink-line-2);
+  margin-block-end: clamp(2rem, 5vw, 4rem);
+}
+
+.title-block__no {
+  font-family: var(--font-tech);
+  font-size: clamp(1.6rem, 4.5vw, 2.6rem);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--bronze-dim);
+  font-variant-numeric: tabular-nums;
+  padding-block-start: 0.1em;
+}
+
+.title-block__body { min-width: 0; }
+
+.title-block__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.1rem;
+  margin-block-end: 0.75rem;
+}
+
+.title-block__eyebrow::after {
+  content: '';
+  flex: 1 1 3rem;
+  height: 1px;
+  background: repeating-linear-gradient(
+    to right,
+    var(--bronze-dim) 0 4px,
+    transparent 4px 8px
+  );
+}
+
+.title-block h2 { font-size: var(--t-h1); }
+
+/* --- 4. Grid bubbles ---------------------------------------
+   Column grid references down the left margin. The letter is the
+   section's own index, so scrolling reads like walking a gridline. */
+
+.bubble {
+  --size: 2.125rem;
+  display: grid;
+  place-items: center;
+  inline-size: var(--size);
+  block-size: var(--size);
+  border: 1px solid var(--bronze-dim);
+  border-radius: 50%;
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--bronze);
+  flex: none;
+  transition: color var(--dur) var(--ease-out),
+              border-color var(--dur) var(--ease-out),
+              background-color var(--dur) var(--ease-out);
+}
+
+.bubble[data-active='true'] {
+  color: #000;
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+/* --- 5. Dimension string -----------------------------------
+   A measured span with end ticks and a break for the value.
+   Used as the divider between measured things. */
+
+.dim {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--bronze-dim);
+}
+
+.dim::before,
+.dim::after {
+  content: '';
+  block-size: 9px;
+  inline-size: 1px;
+  background: currentColor;
+  flex: none;
+}
+
+.dim__line {
+  flex: 1;
+  block-size: 1px;
+  background: currentColor;
+  min-inline-size: 0.75rem;
+}
+
+.dim__value {
+  font-family: var(--font-tech);
+  font-size: var(--t-tech);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bronze);
+  white-space: nowrap;
+}
+
+/* --- 6. Section hatch --------------------------------------
+   45° hairlines: the convention for a cut face in section. Used
+   to mark the blocks that are literally "cut into" the page. */
+
+.hatch {
+  background-image: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--bronze) 30%, transparent) 0 1px,
+    transparent 1px 7px
+  );
+}
+
+/* --- 7. Rules ---------------------------------------------- */
+
+.rule {
+  block-size: 1px;
+  background: var(--ink-line-2);
+  border: 0;
+}
+
+.rule--dashed {
+  background: repeating-linear-gradient(
+    to right,
+    var(--bronze-dim) 0 5px,
+    transparent 5px 10px
+  );
+}
+
+/* --- 8. Measured list --------------------------------------
+   Numbered rows where the number is a real drawing reference. */
+
+.spec-row {
+  display: grid;
+  grid-template-columns: 3.25rem 1fr;
+  gap: clamp(0.75rem, 2vw, 1.75rem);
+  align-items: baseline;
+  padding-block: clamp(1rem, 2.2vw, 1.6rem);
+  border-block-start: 1px solid var(--ink-line);
+}
+
+.spec-row:first-child { border-block-start: 0; }
