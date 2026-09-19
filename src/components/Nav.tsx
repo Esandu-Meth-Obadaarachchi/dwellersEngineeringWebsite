@@ -17,7 +17,8 @@ export function Nav() {
   const active = useActiveSection(ids)
   const [open, setOpen] = useState(false)
   const [lifted, setLifted] = useState(false)
-  const panel = useRef<HTMLDivElement>(null)
+  const panel = useRef<HTMLElement>(null)
+  const toggle = useRef<HTMLButtonElement>(null)
 
   // The bar only gains its background once the hero is behind it.
   useEffect(() => {
@@ -54,12 +55,24 @@ export function Nav() {
     }
   }, [open])
 
+  // Opening the menu moves focus to its first link; closing it hands
+  // focus back to the control that opened it.
+  const wasOpen = useRef(false)
+  useEffect(() => {
+    if (open) {
+      panel.current?.querySelector('a')?.focus()
+    } else if (wasOpen.current) {
+      toggle.current?.focus()
+    }
+    wasOpen.current = open
+  }, [open])
+
   const activeMeta = sections.find((s) => s.id === active) ?? sections[0]
 
   return (
     <>
       {/* --- Top bar ----------------------------------------- */}
-      <div className="nav" data-lifted={lifted || undefined}>
+      <header className="nav" data-lifted={lifted || undefined}>
         <a className="nav__brand" href="#top">
           <Crest className="nav__crest" />
           <span className="nav__brand-name">
@@ -78,6 +91,7 @@ export function Nav() {
 
         <button
           className="nav__toggle"
+          ref={toggle}
           type="button"
           aria-expanded={open}
           aria-controls="nav-menu"
@@ -89,10 +103,10 @@ export function Nav() {
             <span />
           </span>
         </button>
-      </div>
+      </header>
 
       {/* --- Gridline rail (wide screens) --------------------- */}
-      <nav className="rail" aria-label="Sections">
+      <nav className="rail" aria-label="Section grid">
         <ul>
           {sections.map((s) => (
             <li key={s.id}>
@@ -108,10 +122,10 @@ export function Nav() {
       </nav>
 
       {/* --- Menu (narrow screens) ---------------------------- */}
-      <div
+      <nav
         id="nav-menu"
         className="menu"
-        data-open={open}
+        aria-label="Sections"
         ref={panel}
         hidden={!open}
       >
@@ -135,7 +149,7 @@ export function Nav() {
             {company.email}
           </a>
         </div>
-      </div>
+      </nav>
     </>
   )
 }

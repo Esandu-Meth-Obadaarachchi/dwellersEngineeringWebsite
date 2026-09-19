@@ -16,12 +16,12 @@
   --gold:       #FFDE59;  /* signal gold — headings, live elements */
   --gold-deep:  #E3BE33;
   --bronze:     #B29629;  /* crest bronze — linework, rules, frames */
-  --bronze-dim: #6B5A1B;  /* quiet drafting linework */
+  --bronze-dim: #7A6620;  /* quiet drafting linework and sheet numbers */
 
   /* --- Neutrals -------------------------------------------- */
   --bone:       #F3F1EA;  /* primary text on black */
   --bone-2:     #B6B4AC;  /* secondary text */
-  --bone-3:     #77746C;  /* captions, disabled */
+  --bone-3:     #8B887F;  /* captions — 5.7:1 on --ink */
   --concrete:   #8E8D86;  /* material tone, shared with the 3D scene */
 
   /* --- Type ------------------------------------------------ */
@@ -54,8 +54,9 @@
   --dur-slow:  900ms;
 
   --z-frame: 40;
-  --z-nav:   60;
   --z-menu:  70;
+  /* The bar sits above the open menu: it carries the close control. */
+  --z-nav:   80;
 }
 
 /* Reduced motion: collapse durations rather than removing transitions,

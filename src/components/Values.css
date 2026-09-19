@@ -20,7 +20,9 @@
 
 .value:hover { background: var(--ink-raise); }
 
-.value__no { color: var(--bronze-dim); }
+/* A visible label, so it takes the readable bronze rather than
+   the linework tone. */
+.value__no { color: var(--bronze); }
 
 .value__name {
   font-size: clamp(1.15rem, 2vw, 1.6rem);
