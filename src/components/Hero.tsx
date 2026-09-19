@@ -42,12 +42,16 @@ export function Hero() {
     <header className="hero" ref={root}>
       <div className="hero__backdrop" aria-hidden="true">
         <picture>
-          <source srcSet="/assets/img/architecture-tower.webp" type="image/webp" />
+          <source
+            type="image/webp"
+            sizes="100vw"
+            srcSet="/assets/img/hero-720.webp 720w, /assets/img/hero-1040.webp 1040w, /assets/img/hero-1405.webp 1405w"
+          />
           <img
-            src="/assets/img/architecture-tower.jpg"
+            src="/assets/img/hero.jpg"
             alt=""
-            width={1200}
-            height={1813}
+            width={1405}
+            height={2123}
             decoding="async"
           />
         </picture>

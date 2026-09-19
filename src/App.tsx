@@ -2,7 +2,7 @@ import { Nav } from './components/Nav'
 import { Hero } from './components/Hero'
 import { BuildSequence } from './components/BuildSequence'
 import { About } from './components/About'
-import { Services } from './components/Services'
+import { Services, Method } from './components/Services'
 import { Leadership } from './components/Leadership'
 import { Values } from './components/Values'
 import { Contact } from './components/Contact'
@@ -26,6 +26,7 @@ export function App() {
         <BuildSequence />
         <About />
         <Services />
+        <Method />
         <Leadership />
         <Values />
         <Contact />

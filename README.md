@@ -58,12 +58,34 @@ Old laptops and phones are the constraint, so the scene is budgeted:
 - The three.js chunk is code-split and lazy-loaded, so first paint does not
   wait for it.
 
-Measured on a production build:
+## Images
 
-| | gzipped |
+The booklet's photography is black and white, and the page renders it that way,
+so it ships already greyscale — it compresses far better at the same apparent
+quality. The hero backdrop is served at three widths through `srcset`, so a
+phone fetches ~87 kB rather than ~162 kB. The lion crest is an inlined SVG
+component rather than a file, so `currentColor` resolves and it can appear in
+gold, bronze or bone without a second request.
+
+## Measured
+
+On a production build, throttled to 4× slower CPU and ~1.6 Mbps:
+
+| | |
 | --- | --- |
-| First load (HTML + CSS + app + React) | ~69 kB |
-| 3D chunk, fetched only near the build section | ~216 kB |
+| First contentful paint | ~0.96 s |
+| First load, gzipped (HTML + CSS + app + React) | ~69 kB |
+| 3D chunk, gzipped — requested after first paint | ~216 kB |
+
+Per animation frame, while scrubbing the entire build sequence:
+
+| | script | total task |
+| --- | --- | --- |
+| Desktop | 5.9 ms | 7.7 ms |
+| 4× CPU throttle | 8.3 ms | 11.0 ms |
+| Phone viewport, 6× CPU throttle | 11.0 ms | 14.2 ms |
+
+All inside the 16.7 ms budget for 60 fps.
 
 ## Running
 

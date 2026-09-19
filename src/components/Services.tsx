@@ -57,24 +57,41 @@ export function Services() {
           </div>
         </Reveal>
       </div>
+    </Section>
+  )
+}
 
-      {/* The process, as a numbered sequence — the one place on this
-          page where numbering is genuinely ordinal. */}
-      <div className="process" id="method">
-        <Reveal className="process__head">
-          <h3>How a project runs</h3>
-          <p className="tech">Six stages · concept to post-completion</p>
-        </Reveal>
+/**
+ * The method, as a numbered sequence — the one place on this page
+ * where numbering is genuinely ordinal, because the stages happen in
+ * this order and no other. These are the same six stages the 3D build
+ * sequence steps through.
+ */
+export function Method() {
+  return (
+    <Section
+      id="method"
+      title="How a project runs"
+      note="Six stages · concept to post-completion"
+    >
+      <ol className="process__list">
+        {process.map((p, i) => (
+          <Reveal as="li" key={p.step} delay={i * 70} className="process__step">
+            <span className="process__no tech">{String(i + 1).padStart(2, '0')}</span>
+            <span className="process__label">{p.step}</span>
+          </Reveal>
+        ))}
+      </ol>
 
-        <ol className="process__list">
-          {process.map((p, i) => (
-            <Reveal as="li" key={p.step} delay={i * 70} className="process__step">
-              <span className="process__no tech">{String(i + 1).padStart(2, '0')}</span>
-              <span className="process__label">{p.step}</span>
-            </Reveal>
-          ))}
-        </ol>
-      </div>
+      <Reveal className="process__note">
+        <div className="dim">
+          <span className="dim__line" />
+          <span className="dim__value">
+            Watch these six stages build, above
+          </span>
+          <span className="dim__line" />
+        </div>
+      </Reveal>
     </Section>
   )
 }
