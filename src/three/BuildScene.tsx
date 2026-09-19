@@ -50,11 +50,11 @@ export default function BuildScene({
           stencil: false,
           depth: true,
         }}
-        camera={{ fov: 38, near: 0.5, far: 220, position: [24, 6, 22] }}
+        camera={{ fov: 38, near: 0.5, far: 320, position: [24, 6, 22] }}
         onCreated={({ gl, scene }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping
           gl.toneMappingExposure = 1.05
-          scene.fog = new THREE.Fog('#050505', 38, 104)
+          scene.fog = new THREE.Fog('#050505', 52, 155)
         }}
       >
         <ProgressBridge source={progress} />

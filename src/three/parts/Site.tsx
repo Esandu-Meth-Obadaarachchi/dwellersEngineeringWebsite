@@ -122,8 +122,8 @@ export function Site() {
   // frame painted on a solid floor: you never see that it was dug.
   const groundGeo = useMemo(() => {
     // Wide enough that its edge never appears inside the fog.
-    const w = 240
-    const d = 240
+    const w = 420
+    const d = 420
     const shape = new THREE.Shape([
       new THREE.Vector2(-w / 2, -d / 2),
       new THREE.Vector2(w / 2, -d / 2),

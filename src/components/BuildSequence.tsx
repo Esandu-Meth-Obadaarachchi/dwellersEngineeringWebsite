@@ -59,7 +59,7 @@ export function BuildSequence() {
       aria-labelledby="build-title"
       data-reduced={reducedMotion || undefined}
     >
-      <div className="build__stage" ref={stageRef}>
+      <div className="build__stage" ref={stageRef} data-started={shown > 0.06 || undefined}>
         <div className="build__canvas">
           {armed && (
             <Suspense fallback={<SceneFallback />}>

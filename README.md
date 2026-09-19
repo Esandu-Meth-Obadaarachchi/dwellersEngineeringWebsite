@@ -11,9 +11,12 @@ construction company based in Angoda, Sri Lanka.
 | --- | --- |
 | Build | Vite 5 + TypeScript |
 | UI | React 18 |
-| 3D | three.js via react-three-fiber + drei |
-| Motion | framer-motion (`LazyMotion`, dom-only feature bundle) |
+| 3D | three.js via react-three-fiber |
+| Motion | CSS transitions and keyframes, driven by one `IntersectionObserver` |
 | Styling | Hand-authored CSS with custom properties — no framework |
+
+There is no animation library and no UI framework. The only runtime
+dependencies are React and three.js.
 
 ## Design
 
@@ -47,10 +50,20 @@ Old laptops and phones are the constraint, so the scene is budgeted:
 - Device tier (`src/hooks/useDeviceTier.ts`) caps device pixel ratio, instance
   counts and geometry segments.
 - The canvas renders only while it is on screen.
+- The camera path is re-fitted to the viewport's aspect rather than re-authored,
+  so a portrait phone gets a wider lens and more distance instead of a cropped
+  building.
 - `prefers-reduced-motion` is respected: the scene settles to the completed
   building and the scroll-linked animation is disabled.
 - The three.js chunk is code-split and lazy-loaded, so first paint does not
   wait for it.
+
+Measured on a production build:
+
+| | gzipped |
+| --- | --- |
+| First load (HTML + CSS + app + React) | ~69 kB |
+| 3D chunk, fetched only near the build section | ~216 kB |
 
 ## Running
 

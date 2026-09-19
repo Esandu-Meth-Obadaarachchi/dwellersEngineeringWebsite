@@ -60,9 +60,10 @@
   padding: clamp(1.5rem, 4vw, 3.25rem);
 }
 
+/* Clear of the fixed bar, which carries the same brand name. */
 .build__hud-tl {
   position: absolute;
-  top: clamp(1.5rem, 4vw, 3.25rem);
+  top: clamp(4.25rem, 4vw + 3rem, 5.5rem);
   left: clamp(1.5rem, 4vw, 3.25rem);
   display: grid;
   gap: 0.35rem;
@@ -71,7 +72,7 @@
 
 .build__hud-tr {
   position: absolute;
-  top: clamp(1.5rem, 4vw, 3.25rem);
+  top: clamp(4.25rem, 4vw + 3rem, 5.5rem);
   right: clamp(1.5rem, 4vw, 3.25rem);
   display: grid;
   justify-items: end;
@@ -172,6 +173,9 @@
 
 .build__scroll {
   position: absolute;
+  /* The prompt retires once the build is visibly under way. */
+  opacity: 1;
+  transition: opacity var(--dur-slow) var(--ease-out);
   right: clamp(1.5rem, 4vw, 3.25rem);
   bottom: clamp(2.5rem, 7vh, 5rem);
   z-index: 3;
@@ -201,6 +205,8 @@
 }
 
 /* --- Small screens ------------------------------------------ */
+
+.build__stage[data-started='true'] .build__scroll { opacity: 0; }
 
 @media (max-width: 52rem) {
   .build { height: 480vh; }

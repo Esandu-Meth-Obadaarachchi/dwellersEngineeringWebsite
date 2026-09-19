@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { readProgress } from '../Assembly'
@@ -14,12 +14,34 @@ import { CAMERA, PHASE } from '../schedule'
  * directly, so a fast scroll is a sweep and not a jump cut.
  */
 export function Rig({ reducedMotion }: { reducedMotion: boolean }) {
-  const { camera } = useThree()
+  const { camera, size } = useThree()
 
   const pos = useRef(new THREE.Vector3(...CAMERA[0].pos))
   const look = useRef(new THREE.Vector3(...CAMERA[0].look))
   const targetPos = useMemo(() => new THREE.Vector3(), [])
   const targetLook = useMemo(() => new THREE.Vector3(), [])
+
+  /**
+   * The keyframes are composed for a wide screen. A portrait phone has
+   * the same vertical field of view but a far narrower horizontal one,
+   * so the identical camera position crops the building in half. The
+   * lens is widened and the camera pulled back to suit the aspect —
+   * the framing is re-derived rather than the path re-authored.
+   */
+  const fit = useMemo(() => {
+    const aspect = size.width / Math.max(1, size.height)
+    const fov = aspect >= 1.4 ? 38 : aspect >= 1 ? 45 : 56
+    const pull = THREE.MathUtils.clamp(1.15 / aspect, 1, 1.32)
+    return { fov, pull }
+  }, [size.width, size.height])
+
+  useEffect(() => {
+    const cam = camera as THREE.PerspectiveCamera
+    if (cam.isPerspectiveCamera && cam.fov !== fit.fov) {
+      cam.fov = fit.fov
+      cam.updateProjectionMatrix()
+    }
+  }, [camera, fit.fov])
 
   const key = useRef<THREE.DirectionalLight>(null!)
   const fill = useRef<THREE.DirectionalLight>(null!)
@@ -31,6 +53,12 @@ export function Rig({ reducedMotion }: { reducedMotion: boolean }) {
     const d = Math.min(dt, 0.1)
 
     sampleCamera(p, targetPos, targetLook)
+
+    // Push the sampled position out along its own sight line so the
+    // subject fits the viewport's aspect.
+    if (fit.pull !== 1) {
+      targetPos.sub(targetLook).multiplyScalar(fit.pull).add(targetLook)
+    }
 
     // A slow ambient drift, so the frame is never completely still.
     if (!reducedMotion) {
