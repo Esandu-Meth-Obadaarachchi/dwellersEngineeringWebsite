@@ -29,8 +29,10 @@
   font-weight: 800;
   font-stretch: 116%;
   text-transform: uppercase;
-  font-size: clamp(1.15rem, 3vw, 2rem);
-  line-height: 1.12;
+  /* Sized so chamara@dwellers.com stays on one line down to 320px
+     rather than breaking mid-word. */
+  font-size: clamp(1rem, 4.6vw, 2rem);
+  line-height: 1.14;
   letter-spacing: -0.02em;
   color: var(--bone);
   word-break: break-word;
@@ -95,5 +97,5 @@
 .contact__hours { color: var(--bone-3); }
 
 @media (min-width: 56rem) {
-  .contact { grid-template-columns: 1.25fr 1fr; }
+  .contact { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
 }

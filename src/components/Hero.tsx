@@ -73,7 +73,7 @@ export function Hero() {
         </h1>
 
         {/* The tagline, dimensioned like a drawing note. */}
-        <div className="hero__dim dim">
+        <div className="hero__dim dim dim--long">
           <span className="dim__line" />
           <span className="dim__value">{company.tagline}</span>
           <span className="dim__line" />

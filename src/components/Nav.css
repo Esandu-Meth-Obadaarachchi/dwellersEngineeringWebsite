@@ -7,8 +7,11 @@
   z-index: var(--z-nav);
   display: flex;
   align-items: center;
-  gap: clamp(1rem, 3vw, 2.5rem);
+  gap: clamp(0.75rem, 3vw, 2.5rem);
   padding: 0.9rem var(--gutter);
+  /* The bar must never be wider than the screen: the only way out of
+     the menu lives in it. */
+  min-inline-size: 0;
   transition: background-color var(--dur) var(--ease-out),
               border-color var(--dur) var(--ease-out);
   border-block-end: 1px solid transparent;
@@ -23,8 +26,13 @@
 .nav__brand {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  flex: none;
+  gap: 0.6rem;
+  min-inline-size: 0;
+  overflow: hidden;
+  /* Padding pulled back by an equal margin: a 44px touch target that
+     does not change the height of the bar. */
+  padding-block: 0.6rem;
+  margin-block: -0.6rem;
 }
 
 .nav__crest { color: var(--gold); inline-size: 24px; block-size: auto; flex: none; }
@@ -35,8 +43,10 @@
   font-stretch: 118%;
   text-transform: uppercase;
   letter-spacing: -0.01em;
-  font-size: 0.95rem;
+  /* Scaled so brand + gap + toggle still fit a 320px screen. */
+  font-size: clamp(0.72rem, 2.6vw, 0.95rem);
   line-height: 1;
+  white-space: nowrap;
 }
 
 .nav__brand-name span { color: var(--gold); }
@@ -63,6 +73,9 @@
 .nav__call {
   display: none;
   color: var(--bone-2);
+  white-space: nowrap;
+  padding-block: 0.7rem;
+  margin-block: -0.7rem;
   transition: color var(--dur) var(--ease-out);
 }
 .nav__call:hover { color: var(--gold); }
@@ -76,6 +89,9 @@
   border: 1px solid var(--ink-line-2);
   flex: none;
 }
+
+/* The sheet readout is the first thing to go when space runs out. */
+.nav__sheet { min-inline-size: 0; overflow: hidden; white-space: nowrap; }
 
 .nav__toggle-bars {
   display: grid;
@@ -140,10 +156,17 @@
   background: var(--ink-sunk);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   padding: 5rem var(--gutter) 2.5rem;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
+
+/* Centred by auto margins rather than justify-content: centring a
+   flex column clips the overflow at both ends on a short screen,
+   where auto margins simply collapse to zero. */
+.menu ul { margin-block-start: auto; }
+.menu__foot { margin-block-end: auto; }
 
 .menu[hidden] { display: none; }
 
@@ -182,7 +205,7 @@
   font-weight: 800;
   font-stretch: 118%;
   text-transform: uppercase;
-  font-size: clamp(1.5rem, 7vw, 2.4rem);
+  font-size: clamp(1.15rem, 6.4vw, 2.4rem);
   line-height: 1;
   letter-spacing: -0.02em;
 }

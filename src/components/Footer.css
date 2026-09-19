@@ -73,5 +73,5 @@
 }
 
 @media (min-width: 46rem) {
-  .footer__inner { grid-template-columns: 1.2fr 1fr 1fr; }
+  .footer__inner { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); }
 }

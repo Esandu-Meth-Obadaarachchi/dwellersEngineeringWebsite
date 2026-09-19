@@ -84,7 +84,7 @@ export function Method() {
       </ol>
 
       <Reveal className="process__note">
-        <div className="dim">
+        <div className="dim dim--long">
           <span className="dim__line" />
           <span className="dim__value">
             Watch these six stages build, above

@@ -81,6 +81,6 @@
   .about__lead   { grid-column: 1; grid-row: 1; }
   .about__body   { grid-column: 1; grid-row: 2; }
   .about__figure { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 6rem; }
-  .stances { grid-template-columns: 1fr 1fr; }
-  .divisions { grid-template-columns: 1fr 1fr; }
+  .stances { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .divisions { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }

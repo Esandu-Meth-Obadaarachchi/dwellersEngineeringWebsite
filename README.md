@@ -58,6 +58,38 @@ Old laptops and phones are the constraint, so the scene is budgeted:
 - The three.js chunk is code-split and lazy-loaded, so first paint does not
   wait for it.
 
+## Responsive
+
+Verified with no horizontal overflow at every width from 320px up, in both
+orientations:
+
+| | |
+| --- | --- |
+| Phones | 320, 360, 375, 390, 414, 430 and landscape |
+| Tablets | 768, 834, 1024 in both orientations |
+| Desktop | 1280, 1440, 1920 |
+
+Layout is fluid rather than stepped — `clamp()` on every type and space token,
+with breakpoints only where the column count genuinely changes. A few things
+are worth knowing:
+
+- The fixed bar's height is a token (`--nav-h`); anything that must sit clear
+  of it, including the 3D overlay and `scroll-padding` for anchors, measures
+  from that rather than guessing.
+- The display face is held at a width and size that keep the longest words —
+  `ENGINEERING`, `chamara@dwellers.com` — on one line down to 320px instead of
+  breaking mid-word.
+- The 3D camera re-fits to the viewport's aspect, so a portrait phone gets a
+  wider lens and more distance rather than a cropped building.
+- Dimension strings drop their flanking rules when the label is a sentence, and
+  the drawing stamp collapses to a single reference row on a phone.
+- A phone held sideways hides the phase ladder, which has nowhere to go on a
+  390px-tall viewport.
+- The menu centres with auto margins, not `justify-content`, so it scrolls
+  instead of clipping on a short screen.
+- Touch targets are opened to 44px under `@media (pointer: coarse)` only, so
+  desktop typography is untouched.
+
 ## Images
 
 The booklet's photography is black and white, and the page renders it that way,

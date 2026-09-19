@@ -63,7 +63,7 @@
 /* Clear of the fixed bar, which carries the same brand name. */
 .build__hud-tl {
   position: absolute;
-  top: clamp(4.25rem, 4vw + 3rem, 5.5rem);
+  top: calc(var(--nav-h) + 0.85rem);
   left: clamp(1.5rem, 4vw, 3.25rem);
   display: grid;
   gap: 0.35rem;
@@ -72,7 +72,7 @@
 
 .build__hud-tr {
   position: absolute;
-  top: clamp(4.25rem, 4vw + 3rem, 5.5rem);
+  top: calc(var(--nav-h) + 0.85rem);
   right: clamp(1.5rem, 4vw, 3.25rem);
   display: grid;
   justify-items: end;
@@ -202,6 +202,19 @@
 
 @media (prefers-reduced-motion: reduce) {
   .build__scroll-line { animation: none; transform: scaleY(1); }
+}
+
+/* --- Short viewports ----------------------------------------
+   A phone held sideways is wide enough for the ladder but not tall
+   enough: it runs into the percentage readout. The model is the
+   point of the section, so the furniture gives way. */
+
+@media (max-height: 34rem) {
+  .build__phases { display: none; }
+  .build__hud-tl { max-inline-size: 14rem; }
+  .build__stage-title { font-size: clamp(1.1rem, 2.6vw, 1.6rem); }
+  .build__caption { bottom: 1.25rem; }
+  .build__scroll { display: none; }
 }
 
 /* --- Small screens ------------------------------------------ */

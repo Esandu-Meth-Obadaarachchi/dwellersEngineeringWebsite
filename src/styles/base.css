@@ -5,6 +5,9 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  overflow-x: clip;
+  /* Jumping to an anchor must not park it under the fixed bar. */
+  scroll-padding-block-start: calc(var(--nav-h) + 1rem);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -145,4 +148,39 @@ p { text-wrap: pretty; }
 .sustain__body > * + *,
 .team__body > * + * {
   margin-block-start: 1.15em;
+}
+
+/* --- Touch targets -------------------------------------------
+   On a mouse a 16px link is fine; on a finger it is not. These are
+   the compact links — footer, menu foot, service and process rows —
+   opened up only where the pointer is coarse, so the desktop
+   typography is untouched. */
+
+@media (pointer: coarse) {
+  .footer__col a,
+  .footer__base a {
+    display: inline-block;
+    padding-block: 0.72rem;
+  }
+
+  .footer__col ul { gap: 0; }
+
+  .menu__foot a { padding-block: 0.72rem; }
+
+  .services__row { padding-block: 1.15rem; }
+  .spec-row { padding-block: 1.15rem; }
+
+  /* The gridline rail is reachable on a large touch screen too. */
+  .rail a { padding-block: 0.3rem; }
+  .rail ul { gap: 0.35rem; }
+}
+
+/* --- Long, unbroken strings ----------------------------------
+   Email addresses and URLs are the usual cause of a page that
+   scrolls sideways on a phone. */
+
+.contact__value,
+.footer__col a,
+.menu__foot a {
+  overflow-wrap: break-word;
 }

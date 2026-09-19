@@ -46,6 +46,11 @@
   --band:       clamp(4.5rem, 11vh, 9.5rem); /* vertical section rhythm */
   --max:        84rem;
 
+  /* Height of the fixed bar: its 44px toggle plus 0.9rem of padding
+     each side. Anything that must sit clear of the bar measures
+     from this rather than guessing. */
+  --nav-h:      4.55rem;
+
   /* --- Motion ---------------------------------------------- */
   --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);

@@ -61,11 +61,20 @@
 .sustain__mark span { color: var(--bone-3); }
 
 @media (min-width: 46rem) {
-  .values { grid-template-columns: 1fr 1fr; }
+  .values { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+
+  /* Five values in two columns leave a hole in the last row, and the
+     grid's own gap colour shows through it. The fifth value takes the
+     whole row instead. */
+  .value:last-child { grid-column: 1 / -1; }
+}
+
+@media (min-width: 64rem) {
+  .value:last-child { grid-column: auto; }
 }
 
 @media (min-width: 64rem) {
   /* Five values, five columns — the grid is the count. */
-  .values { grid-template-columns: repeat(5, 1fr); }
-  .sustain { grid-template-columns: 1.4fr 1fr; }
+  .values { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .sustain { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
 }

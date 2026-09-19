@@ -9,7 +9,9 @@
   padding: 0;
 }
 
-.services__item { border-block-start: 1px solid var(--ink-line); }
+/* The title block already closes with a rule, so the list opens
+   without a second one immediately under it. */
+.services__item + .services__item { border-block-start: 1px solid var(--ink-line); }
 .services__item:last-child { border-block-end: 1px solid var(--ink-line); }
 
 .services__row {
@@ -105,7 +107,7 @@
 }
 
 @media (min-width: 56rem) {
-  .services { grid-template-columns: 1.55fr 1fr; align-items: start; }
-  .process__list { grid-template-columns: repeat(3, 1fr); gap: 1px; }
+  .services { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: start; }
+  .process__list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; }
   .process__step { padding-inline: clamp(1rem, 2vw, 1.5rem); }
 }

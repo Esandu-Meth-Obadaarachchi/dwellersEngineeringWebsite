@@ -218,16 +218,6 @@
   .hero__ticker-track { animation: none; }
 }
 
-@media (max-width: 46rem) {
-  /* A dimension string cannot be measured across a phone, so the
-     tagline drops its flanking rules and simply wraps. */
-  .hero__dim { display: block; }
-  .hero__dim::before,
-  .hero__dim::after,
-  .hero__dim .dim__line { display: none; }
-  .hero__dim .dim__value { white-space: normal; }
-}
-
 @media (max-width: 40rem) {
   .hero__foot { flex-direction: column; align-items: stretch; }
   .hero__cta { justify-content: center; }
