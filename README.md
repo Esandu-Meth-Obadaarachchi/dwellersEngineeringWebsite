@@ -129,6 +129,22 @@ npm run preview    # serve the production build
 npm run typecheck
 ```
 
+## Deployment
+
+Hosted on Netlify. The production build is deployed from the CLI:
+
+```bash
+npm run build
+netlify deploy --prod --dir=dist
+```
+
+`netlify.toml` sets the build command, fingerprinted-asset caching (a year,
+immutable) against an always-revalidated document, and the usual security
+headers.
+
+Live at https://dwellers-engineering.netlify.app — a custom domain can be
+pointed at it from the project's Domain management settings.
+
 ## Content
 
 All copy, both directors' portraits and the crest come from
