@@ -1,0 +1,214 @@
+/* The scroll-driven build. The section is tall; the stage inside it
+   is sticky, so the page scroll becomes construction time. */
+
+.build {
+  position: relative;
+  /* Scroll distance = how long the build takes to watch. */
+  height: 620vh;
+  background: var(--ink-sunk);
+}
+
+.build[data-reduced] {
+  height: 100vh;
+}
+
+.build__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.build__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.build__canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: pan-y; /* never trap the page scroll on a phone */
+}
+
+/* Horizon wash: keeps the model sitting in the page rather than
+   floating in a black box. */
+.build__stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 70% at 50% 108%, rgba(255, 222, 89, 0.07), transparent 60%),
+    linear-gradient(to bottom, rgba(5, 5, 5, 0.92) 0%, transparent 22%, transparent 62%, rgba(5, 5, 5, 0.95) 100%);
+}
+
+.build__fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+/* --- HUD ---------------------------------------------------- */
+
+.build__hud {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  padding: clamp(1.5rem, 4vw, 3.25rem);
+}
+
+.build__hud-tl {
+  position: absolute;
+  top: clamp(1.5rem, 4vw, 3.25rem);
+  left: clamp(1.5rem, 4vw, 3.25rem);
+  display: grid;
+  gap: 0.35rem;
+  max-width: 18rem;
+}
+
+.build__hud-tr {
+  position: absolute;
+  top: clamp(1.5rem, 4vw, 3.25rem);
+  right: clamp(1.5rem, 4vw, 3.25rem);
+  display: grid;
+  justify-items: end;
+  gap: 0.35rem;
+}
+
+.build__pct {
+  font-size: clamp(1.4rem, 3.4vw, 2.1rem);
+  font-weight: 300;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* Phase ladder down the right margin — the programme of works. */
+.build__phases {
+  position: absolute;
+  right: clamp(1.5rem, 4vw, 3.25rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  gap: 0.85rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.build__phases li {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  color: var(--bronze-dim);
+  transition: color var(--dur) var(--ease-out);
+}
+
+.build__phases li[data-done='true'] { color: var(--bronze); }
+.build__phases li[data-current='true'] { color: var(--gold); }
+
+.build__phase-no { font-variant-numeric: tabular-nums; }
+
+.build__phase-tick {
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background: currentColor;
+  transition: width var(--dur) var(--ease-out);
+}
+
+.build__phases li[data-current='true'] .build__phase-tick { width: 2.75rem; }
+
+/* --- Caption ------------------------------------------------ */
+
+.build__caption {
+  position: absolute;
+  left: clamp(1.5rem, 4vw, 3.25rem);
+  bottom: clamp(2.5rem, 7vh, 5rem);
+  z-index: 3;
+  max-width: min(32rem, 70vw);
+  pointer-events: none;
+}
+
+.build__stage-no { margin-block-end: 0.7rem; }
+
+.build__stage-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 118%;
+  text-transform: uppercase;
+  font-size: clamp(1.35rem, 3.4vw, 2.6rem);
+  line-height: 0.96;
+  letter-spacing: -0.015em;
+  color: var(--bone);
+  /* Each stage title wipes in as the phase changes. */
+  animation: stage-in var(--dur-slow) var(--ease-out) both;
+}
+
+.build__stage-note {
+  margin-block-start: 0.7rem;
+  font-family: var(--font-tech);
+  font-size: var(--t-tech);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bone-3);
+}
+
+@keyframes stage-in {
+  from { opacity: 0; transform: translateY(0.6em); clip-path: inset(0 0 100% 0); }
+  to   { opacity: 1; transform: none;              clip-path: inset(0 0 -10% 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .build__stage-title { animation: none; }
+}
+
+/* --- Scroll hint -------------------------------------------- */
+
+.build__scroll {
+  position: absolute;
+  right: clamp(1.5rem, 4vw, 3.25rem);
+  bottom: clamp(2.5rem, 7vh, 5rem);
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  color: var(--bone-3);
+  pointer-events: none;
+}
+
+.build__scroll-line {
+  display: block;
+  width: 1px;
+  height: 3.25rem;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  transform-origin: top;
+  animation: scroll-pulse 2.4s var(--ease-in-out) infinite;
+}
+
+@keyframes scroll-pulse {
+  0%, 100% { transform: scaleY(0.35); opacity: 0.4; }
+  50%      { transform: scaleY(1);    opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .build__scroll-line { animation: none; transform: scaleY(1); }
+}
+
+/* --- Small screens ------------------------------------------ */
+
+@media (max-width: 52rem) {
+  .build { height: 480vh; }
+  .build__phases { display: none; }
+  .build__hud-tl { max-width: 11rem; }
+  .build__scroll { display: none; }
+  .build__caption {
+    max-width: none;
+    right: clamp(1.5rem, 4vw, 3.25rem);
+  }
+}

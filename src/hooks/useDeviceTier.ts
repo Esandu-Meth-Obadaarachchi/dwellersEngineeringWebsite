@@ -23,7 +23,7 @@ export function useDeviceTier(): DeviceTier {
       .connection?.saveData
 
     if (saveData || cores <= 4 || memory <= 4 || (coarse && narrow)) return 'low'
-    if (cores <= 8 || memory <= 8 || coarse) return 'mid'
+    if (coarse || cores < 8 || memory < 8) return 'mid'
     return 'high'
   }, [])
 }

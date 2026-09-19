@@ -1,18 +1,4 @@
-import { createContext, useContext, type MutableRefObject } from 'react'
 import type { Window } from './schedule'
-
-/**
- * Scroll progress is shared as a ref, not as state. Every part of the
- * scene reads it inside its own render loop, so a full-page scroll
- * animates 3,000 moving pieces without a single React re-render.
- */
-export const ProgressContext = createContext<MutableRefObject<number> | null>(null)
-
-export function useProgress(): MutableRefObject<number> {
-  const ref = useContext(ProgressContext)
-  if (!ref) throw new Error('useProgress must be used inside <ProgressContext.Provider>')
-  return ref
-}
 
 export const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v)
 

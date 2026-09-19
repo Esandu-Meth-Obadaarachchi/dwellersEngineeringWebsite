@@ -55,24 +55,26 @@ export const SHED = { x0: 3, x1: 8.5, z0: -7.5, z1: -3, h: 2.9 } as const
 
 /** The six process stages from the company profile, pinned to the
  *  moment in the build where each one is actually happening. */
-export const CAPTIONS = [
-  { at: 0.02, stage: '01', title: 'Client Requirement Analysis', note: 'Survey, setting out, site establishment' },
-  { at: 0.16, stage: '02', title: 'Concept Development and Planning', note: 'Excavation and pad footings to design level' },
-  { at: 0.31, stage: '03', title: 'Design Coordination and Cost Optimization', note: 'Reinforcement cages, column casting' },
-  { at: 0.50, stage: '04', title: 'Construction and Implementation', note: 'Suspended slabs, blockwork, roof structure' },
-  { at: 0.75, stage: '05', title: 'Quality Control and Safety Management', note: 'Glazing, wet areas, ancillary structures' },
-  { at: 0.95, stage: '06', title: 'Project Handover and Post Completion Support', note: 'Landscaping, commissioning, handover' },
+export type Caption = { at: number; stage: string; title: string; note: string }
+
+export const CAPTIONS: readonly Caption[] = [
+  { at: 0.00, stage: '01', title: 'Client Requirement Analysis', note: 'Survey, setting out, site establishment' },
+  { at: 0.10, stage: '02', title: 'Concept Development and Planning', note: 'Excavation and pad footings to design level' },
+  { at: 0.24, stage: '03', title: 'Design Coordination and Cost Optimization', note: 'Reinforcement cages, column casting' },
+  { at: 0.35, stage: '04', title: 'Construction and Implementation', note: 'Suspended slabs, blockwork, roof structure' },
+  { at: 0.65, stage: '05', title: 'Quality Control and Safety Management', note: 'Glazing, wet areas, ancillary structures' },
+  { at: 0.86, stage: '06', title: 'Project Handover and Post Completion Support', note: 'Landscaping, commissioning, handover' },
 ] as const
 
 /** Camera keyframes. Lerped and damped, never cut. */
 export const CAMERA = [
-  { t: 0.00, pos: [24, 5.5, 22], look: [-4, 0.5, 0] },
-  { t: 0.14, pos: [17, 7.5, 19], look: [-6, 1.0, 0] },
-  { t: 0.30, pos: [4, 8.5, 23], look: [-6, 2.5, 0] },
-  { t: 0.45, pos: [-16, 9.5, 19], look: [-6, 3.5, 0] },
-  { t: 0.60, pos: [-22, 7.0, 6], look: [-6, 3.5, 0] },
-  { t: 0.70, pos: [-13, 14.0, 18], look: [-6, 4.0, 0] },
-  { t: 0.82, pos: [8, 8.0, 17], look: [2, 1.5, 1] },
-  { t: 0.90, pos: [16, 7.0, 6], look: [3, 2.0, -3] },
-  { t: 1.00, pos: [21, 9.5, 24], look: [-3, 2.5, 0] },
+  { t: 0.00, pos: [30, 10.0, 34], look: [-5, 1.0, 0] },   // the empty plot
+  { t: 0.14, pos: [22, 9.0, 26], look: [-6, 1.0, 0] },    // down onto the footings
+  { t: 0.30, pos: [6, 11.0, 30], look: [-6, 3.0, 0] },    // along the column grid
+  { t: 0.45, pos: [-18, 13.0, 26], look: [-6, 4.0, 0] },  // slabs landing
+  { t: 0.60, pos: [-30, 11.0, 12], look: [-6, 4.0, 0] },  // side elevation, blockwork
+  { t: 0.70, pos: [-20, 20.0, 26], look: [-6, 4.5, 0] },  // over the roof
+  { t: 0.82, pos: [10, 12.0, 26], look: [0, 1.5, 1] },    // across the pool
+  { t: 0.90, pos: [22, 11.0, 10], look: [3, 2.0, -3] },   // the shed
+  { t: 1.00, pos: [26, 14.0, 32], look: [-3, 2.5, 0] },   // handover
 ] as const
