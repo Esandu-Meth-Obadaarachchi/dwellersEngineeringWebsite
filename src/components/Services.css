@@ -1,0 +1,125 @@
+.services {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+}
+
+.services__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.services__item { border-block-start: 1px solid var(--ink-line); }
+.services__item:last-child { border-block-end: 1px solid var(--ink-line); }
+
+.services__row {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  padding-block: clamp(1rem, 2.4vw, 1.5rem);
+  transition: padding-inline-start var(--dur) var(--ease-out);
+}
+
+.services__code {
+  color: var(--bronze);
+  transition: color var(--dur) var(--ease-out);
+}
+
+.services__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-stretch: 112%;
+  text-transform: uppercase;
+  font-size: clamp(1rem, 2.1vw, 1.55rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--bone);
+  transition: color var(--dur) var(--ease-out);
+}
+
+/* A measured rule that draws itself across the row on hover —
+   the row being dimensioned, not merely highlighted. */
+.services__rule {
+  grid-column: 2;
+  block-size: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-in-out);
+}
+
+.services__row[data-active='true'] { padding-inline-start: 0.6rem; }
+.services__row[data-active='true'] .services__code { color: var(--gold); }
+.services__row[data-active='true'] .services__rule { transform: scaleX(1); }
+
+.services__aside-inner {
+  border: 1px solid var(--ink-line-2);
+  /* The hatch marks the block as cut in section; it must stay behind
+     the text, not compete with it. */
+  background-blend-mode: normal;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: grid;
+  gap: 1.2rem;
+  align-content: start;
+  background-color: var(--ink-raise);
+}
+
+.services__aside-inner p:nth-of-type(2) {
+  color: var(--bone-2);
+  max-width: 34ch;
+}
+
+/* --- Process --------------------------------------------------- */
+
+.process {
+  margin-block-start: clamp(3.5rem, 8vw, 6rem);
+  padding-block-start: clamp(2rem, 4vw, 3rem);
+  border-block-start: 1px solid var(--ink-line-2);
+  scroll-margin-block-start: 6rem;
+}
+
+.process__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
+  margin-block-end: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.process__head h3 { font-size: var(--t-h2); }
+.process__head p { color: var(--bone-3); }
+
+.process__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+  background: var(--ink-line);
+  border-block: 1px solid var(--ink-line);
+}
+
+.process__step {
+  background: var(--ink);
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  padding: clamp(1rem, 2.2vw, 1.45rem) 0;
+  position: relative;
+}
+
+.process__no { color: var(--bronze); }
+
+.process__label {
+  font-size: clamp(0.98rem, 1.5vw, 1.15rem);
+  color: var(--bone);
+}
+
+@media (min-width: 56rem) {
+  .services { grid-template-columns: 1.55fr 1fr; align-items: start; }
+  .process__list { grid-template-columns: repeat(3, 1fr); gap: 1px; }
+  .process__step { padding-inline: clamp(1rem, 2vw, 1.5rem); }
+}

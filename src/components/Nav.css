@@ -1,0 +1,208 @@
+/* --- Top bar ------------------------------------------------- */
+
+.nav {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  padding: 0.9rem var(--gutter);
+  transition: background-color var(--dur) var(--ease-out),
+              border-color var(--dur) var(--ease-out);
+  border-block-end: 1px solid transparent;
+}
+
+.nav[data-lifted] {
+  background: rgba(5, 5, 5, 0.82);
+  backdrop-filter: blur(10px) saturate(1.1);
+  border-block-end-color: var(--ink-line-2);
+}
+
+.nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: none;
+}
+
+.nav__crest { color: var(--gold); inline-size: 24px; block-size: auto; flex: none; }
+
+.nav__brand-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 118%;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.nav__brand-name span { color: var(--gold); }
+
+/* The live sheet readout: which drawing you are standing on. */
+.nav__sheet {
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  margin-inline: auto;
+  color: var(--bone-3);
+}
+
+.nav__sheet-grid {
+  display: grid;
+  place-items: center;
+  inline-size: 1.4rem;
+  block-size: 1.4rem;
+  border: 1px solid var(--bronze-dim);
+  border-radius: 50%;
+  color: var(--gold);
+}
+
+.nav__call {
+  display: none;
+  color: var(--bone-2);
+  transition: color var(--dur) var(--ease-out);
+}
+.nav__call:hover { color: var(--gold); }
+
+.nav__toggle {
+  margin-inline-start: auto;
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border: 1px solid var(--ink-line-2);
+  flex: none;
+}
+
+.nav__toggle-bars {
+  display: grid;
+  gap: 5px;
+  inline-size: 18px;
+}
+
+.nav__toggle-bars span {
+  display: block;
+  block-size: 1px;
+  background: var(--bone);
+  transition: transform var(--dur) var(--ease-in-out);
+}
+
+.nav__toggle-bars[data-open='true'] span:first-child { transform: translateY(3px) rotate(45deg); }
+.nav__toggle-bars[data-open='true'] span:last-child  { transform: translateY(-3px) rotate(-45deg); }
+
+/* --- Gridline rail ------------------------------------------- */
+
+.rail {
+  display: none;
+  position: fixed;
+  inset-inline-start: calc(var(--sheet-pad) + 0.9rem);
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-nav);
+}
+
+.rail ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+
+.rail a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rail__label {
+  color: var(--bone-3);
+  opacity: 0;
+  transform: translateX(-0.4rem);
+  transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out),
+              color var(--dur) var(--ease-out);
+  white-space: nowrap;
+}
+
+/* The label is an affordance on hover, not a permanent marker — the
+   filled bubble and the sheet readout in the bar already say where
+   you are, and a label parked in the margin fights the hero. */
+.rail a:hover .rail__label,
+.rail a:focus-visible .rail__label {
+  opacity: 1;
+  transform: none;
+  color: var(--gold);
+}
+
+/* --- Menu ---------------------------------------------------- */
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-menu);
+  background: var(--ink-sunk);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5rem var(--gutter) 2.5rem;
+  overflow-y: auto;
+}
+
+.menu[hidden] { display: none; }
+
+.menu ul { list-style: none; margin: 0; padding: 0; }
+
+.menu li {
+  border-block-start: 1px solid var(--ink-line);
+  animation: menu-in 480ms var(--ease-out) both;
+  animation-delay: calc(var(--i) * 45ms + 60ms);
+}
+
+.menu li:last-child { border-block-end: 1px solid var(--ink-line); }
+
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(0.8rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu li { animation: none; }
+}
+
+.menu a {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  align-items: baseline;
+  gap: 1rem;
+  padding-block: 1.05rem;
+}
+
+.menu__grid { color: var(--gold); }
+.menu__sheet { color: var(--bone-3); }
+
+.menu__label {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 118%;
+  text-transform: uppercase;
+  font-size: clamp(1.5rem, 7vw, 2.4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.menu__foot {
+  margin-block-start: 2.5rem;
+  display: grid;
+  gap: 0.5rem;
+  color: var(--bone-3);
+}
+
+/* --- Breakpoints --------------------------------------------- */
+
+@media (min-width: 52rem) {
+  .nav__sheet { display: flex; }
+  .nav__call { display: block; }
+}
+
+@media (min-width: 70rem) {
+  .rail { display: block; }
+  .nav__toggle { display: none; }
+  .menu { display: none !important; }
+}

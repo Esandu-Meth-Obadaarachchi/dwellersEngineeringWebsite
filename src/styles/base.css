@@ -91,3 +91,58 @@ p { text-wrap: pretty; }
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
+
+/* Once the gridline rail appears it takes the left margin of the
+   sheet, exactly as a column grid does on a real drawing. */
+@media (min-width: 70rem) {
+  .shell { padding-inline-start: calc(var(--gutter) + 4.25rem); }
+}
+
+/* --- Section rhythm ------------------------------------------ */
+
+.section {
+  position: relative;
+  padding-block: var(--band);
+  border-block-start: 1px solid var(--ink-line);
+}
+
+.section:first-of-type { border-block-start: 0; }
+
+/* --- Scroll reveal ------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(1.35rem);
+  transition:
+    opacity 760ms var(--ease-out) var(--reveal-delay, 0ms),
+    transform 760ms var(--ease-out) var(--reveal-delay, 0ms);
+}
+
+.reveal[data-shown='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* Long-form prose blocks share one measure and colour.
+   Paragraphs are each wrapped by <Reveal>, so the rhythm is set on the
+   flow children of the block rather than on adjacent <p> siblings. */
+.prose p,
+.about__body p,
+.division p,
+.sustain__body p,
+.team__body p {
+  color: var(--bone-2);
+  max-width: 46ch;
+}
+
+.prose > * + *,
+.about__body > * + *,
+.division > * + *,
+.sustain__body > * + *,
+.team__body > * + * {
+  margin-block-start: 1.15em;
+}

@@ -1,0 +1,179 @@
+/* --- Executive directors -------------------------------------- */
+
+.directors {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+}
+
+.director {
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  grid-template-columns: 1fr;
+  align-items: end;
+}
+
+.director__portrait {
+  position: relative;
+  background:
+    linear-gradient(to top, rgba(255, 222, 89, 0.1), transparent 55%),
+    var(--ink-raise);
+  border: 1px solid var(--ink-line-2);
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+}
+
+.director__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+  filter: grayscale(0.55) contrast(1.06);
+  transition: filter var(--dur-slow) var(--ease-out),
+              transform var(--dur-slow) var(--ease-out);
+}
+
+.director:hover .director__portrait img {
+  filter: grayscale(0) contrast(1.06);
+  transform: scale(1.02);
+}
+
+/* Corner tick, as on a drawing sheet. */
+.director__portrait::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline-start: 0.75rem;
+  inline-size: 16px;
+  block-size: 16px;
+  border-block-start: 1px solid var(--bronze);
+  border-inline-start: 1px solid var(--bronze);
+}
+
+.director__index {
+  position: absolute;
+  inset-block-end: 0.75rem;
+  inset-inline-end: 0.9rem;
+  color: var(--gold);
+  font-size: 0.75rem;
+}
+
+.director__body { display: grid; gap: 0.55rem; align-content: start; }
+
+.director__name {
+  font-size: clamp(1.35rem, 2.6vw, 2rem);
+  color: var(--bone);
+  margin-block-start: 0.2rem;
+}
+
+.director__title { color: var(--bone-3); }
+
+.director__bio {
+  color: var(--bone-2);
+  margin-block-start: 0.6rem;
+  max-width: 48ch;
+}
+
+/* --- Directors' message --------------------------------------- */
+
+.message {
+  margin: clamp(3rem, 7vw, 5rem) 0 0;
+  padding: clamp(1.75rem, 4vw, 3rem);
+  border: 1px solid var(--ink-line-2);
+  background: var(--ink-raise);
+  display: grid;
+  gap: 1rem;
+  position: relative;
+}
+
+.message::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 2px;
+  background: var(--gold);
+}
+
+.message__text {
+  color: var(--bone);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.55;
+  max-width: 62ch;
+}
+
+/* --- Technical expertise --------------------------------------- */
+
+.expertise { margin-block-start: clamp(3rem, 7vw, 5rem); }
+
+.expertise__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem 2rem;
+  padding-block-end: 1rem;
+  border-block-end: 1px solid var(--ink-line-2);
+  margin-block-end: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.expertise__head h3 { font-size: var(--t-h2); }
+.expertise__head p { color: var(--bone-3); }
+
+.expertise__grid {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3rem);
+}
+
+.expert { display: grid; gap: 0.4rem; align-content: start; }
+
+.expert__name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 114%;
+  text-transform: uppercase;
+  font-size: clamp(1.05rem, 1.9vw, 1.35rem);
+  letter-spacing: -0.012em;
+  line-height: 1.1;
+  color: var(--bone);
+}
+
+.expert__qual { color: var(--gold); }
+
+.expert__bio {
+  color: var(--bone-2);
+  margin-block-start: 0.6rem;
+  max-width: 46ch;
+}
+
+/* --- Team ------------------------------------------------------ */
+
+.team {
+  margin-block-start: clamp(3rem, 7vw, 5rem);
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3rem);
+  align-items: center;
+}
+
+.team__figure img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.12) brightness(0.62);
+  border: 1px solid var(--ink-line-2);
+}
+
+.team__body h3 {
+  font-size: var(--t-h2);
+  margin-block-end: 1.2rem;
+  color: var(--gold);
+}
+
+@media (min-width: 46rem) {
+  .director { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); align-items: center; }
+  .director:nth-child(even) .director__portrait { order: 2; }
+}
+
+@media (min-width: 56rem) {
+  .expertise__grid { grid-template-columns: 1fr 1fr; }
+  .team { grid-template-columns: 1fr 1.05fr; }
+}

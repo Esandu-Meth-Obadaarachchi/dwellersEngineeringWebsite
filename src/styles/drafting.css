@@ -176,8 +176,8 @@
 .hatch {
   background-image: repeating-linear-gradient(
     45deg,
-    color-mix(in srgb, var(--bronze) 30%, transparent) 0 1px,
-    transparent 1px 7px
+    color-mix(in srgb, var(--bronze) 16%, transparent) 0 1px,
+    transparent 1px 9px
   );
 }
 

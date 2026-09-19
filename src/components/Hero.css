@@ -59,20 +59,23 @@
 }
 
 .hero__crest {
-  width: clamp(44px, 5vw, 66px);
-  height: auto;
+  inline-size: clamp(42px, 4.6vw, 62px);
+  block-size: auto;
   color: var(--gold);
-  filter: drop-shadow(0 0 22px rgba(255, 222, 89, 0.22));
+  filter: drop-shadow(0 0 26px rgba(255, 222, 89, 0.25));
+  flex: none;
 }
 
 /* --- Title --------------------------------------------------- */
 
 .hero__title {
   font-size: var(--t-hero);
-  line-height: 0.82;
+  line-height: 0.84;
   letter-spacing: -0.035em;
   font-weight: 900;
-  font-stretch: 124%;
+  /* Held at 112% so ENGINEERING — the longest word on the site —
+     fills the measure on one line at every width. */
+  font-stretch: 112%;
   margin-block-end: clamp(1.25rem, 3.5vh, 2.25rem);
   color: var(--bone);
 }
@@ -213,6 +216,16 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero__ticker-track { animation: none; }
+}
+
+@media (max-width: 46rem) {
+  /* A dimension string cannot be measured across a phone, so the
+     tagline drops its flanking rules and simply wraps. */
+  .hero__dim { display: block; }
+  .hero__dim::before,
+  .hero__dim::after,
+  .hero__dim .dim__line { display: none; }
+  .hero__dim .dim__value { white-space: normal; }
 }
 
 @media (max-width: 40rem) {

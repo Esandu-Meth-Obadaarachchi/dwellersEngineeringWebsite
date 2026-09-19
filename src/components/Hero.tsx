@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { company } from '../data/company'
+import { Crest } from './Crest'
 import './Hero.css'
 
 /**
@@ -47,7 +48,6 @@ export function Hero() {
             alt=""
             width={1200}
             height={1813}
-            fetchPriority="high"
             decoding="async"
           />
         </picture>
@@ -55,13 +55,7 @@ export function Hero() {
 
       <div className="hero__inner shell">
         <div className="hero__stamp">
-          <img
-            className="hero__crest"
-            src="/assets/img/crest.svg"
-            alt=""
-            width={72}
-            height={78}
-          />
+          <Crest className="hero__crest" />
           <span className="tech">Est. Angoda · Sri Lanka</span>
         </div>
 

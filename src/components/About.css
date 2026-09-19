@@ -1,0 +1,86 @@
+.about {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  grid-template-columns: 1fr;
+}
+
+.about__lead p {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-stretch: 110%;
+  text-transform: none;
+  font-size: var(--t-h3);
+  line-height: 1.32;
+  letter-spacing: -0.012em;
+  color: var(--bone);
+  max-width: 34ch;
+}
+
+.about__figure { margin: 0; }
+
+.about__figure img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.1) brightness(0.72);
+  border: 1px solid var(--ink-line-2);
+}
+
+.about__figure figcaption {
+  margin-block-start: 0.8rem;
+  color: var(--bone-3);
+}
+
+/* --- Vision & mission ---------------------------------------- */
+
+.stances {
+  display: grid;
+  gap: 1px;
+  background: var(--ink-line-2);
+  border: 1px solid var(--ink-line-2);
+  margin-block-start: clamp(3rem, 7vw, 5rem);
+}
+
+.stance {
+  background: var(--ink);
+  padding: clamp(1.5rem, 3.4vw, 2.6rem);
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.stance__text {
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  line-height: 1.5;
+  color: var(--bone);
+  text-wrap: pretty;
+}
+
+/* --- Divisions ------------------------------------------------ */
+
+.divisions {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  margin-block-start: clamp(3rem, 7vw, 5rem);
+}
+
+.division h3 {
+  font-size: var(--t-h3);
+  color: var(--gold);
+  margin-block-end: 1rem;
+}
+
+@media (min-width: 56rem) {
+  .about {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: start;
+    column-gap: clamp(2rem, 5vw, 4.5rem);
+  }
+  /* Statement and body run down the left; the photograph holds the
+     right margin for both, so neither column is left standing empty. */
+  .about__lead   { grid-column: 1; grid-row: 1; }
+  .about__body   { grid-column: 1; grid-row: 2; }
+  .about__figure { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 6rem; }
+  .stances { grid-template-columns: 1fr 1fr; }
+  .divisions { grid-template-columns: 1fr 1fr; }
+}

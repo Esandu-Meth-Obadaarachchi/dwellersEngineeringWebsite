@@ -1,0 +1,69 @@
+.values {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+  background: var(--ink-line-2);
+  border: 1px solid var(--ink-line-2);
+}
+
+.value {
+  background: var(--ink);
+  padding: clamp(1.4rem, 3vw, 2.2rem);
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  position: relative;
+  transition: background-color var(--dur) var(--ease-out);
+}
+
+.value:hover { background: var(--ink-raise); }
+
+.value__no { color: var(--bronze-dim); }
+
+.value__name {
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  color: var(--gold);
+}
+
+.value__text { color: var(--bone-2); }
+
+/* --- Sustainability -------------------------------------------- */
+
+.section--sustain { background: var(--ink-sunk); }
+
+.sustain {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+}
+
+.sustain__mark {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  padding: clamp(2rem, 5vw, 3.5rem);
+  border: 1px solid var(--ink-line-2);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 222, 89, 0.07), transparent 62%),
+    var(--ink);
+}
+
+.sustain__crest {
+  inline-size: clamp(110px, 16vw, 186px);
+  block-size: auto;
+  color: var(--bronze);
+}
+
+.sustain__mark span { color: var(--bone-3); }
+
+@media (min-width: 46rem) {
+  .values { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 64rem) {
+  /* Five values, five columns — the grid is the count. */
+  .values { grid-template-columns: repeat(5, 1fr); }
+  .sustain { grid-template-columns: 1.4fr 1fr; }
+}
