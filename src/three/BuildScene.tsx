@@ -68,7 +68,7 @@ export default function BuildScene({
           <Glazing />
           <Pool segments={budget.segments} />
           <Shed />
-          <Landscape trees={budget.trees} />
+          <Landscape trees={budget.trees} shrubs={budget.shrubs} flowers={budget.flowers} stones={budget.stones} />
         </Suspense>
       </Canvas>
     </>

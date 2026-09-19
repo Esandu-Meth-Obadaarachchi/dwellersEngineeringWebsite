@@ -69,6 +69,29 @@ export const M = {
   paving: std({ color: '#3E3C36', roughness: 0.9, metalness: 0.02 }),
   planting: std({ color: '#1F2A1B', roughness: 1, metalness: 0 }),
   trunk: std({ color: '#33291D', roughness: 1, metalness: 0 }),
+
+  /** Mown lawn — a shade lighter and warmer than the bare-soil ground,
+   *  so planted areas read as tended rather than as more dark ground. */
+  lawn: std({ color: '#242C1B', roughness: 1, metalness: 0 }),
+
+  /** Clipped shrubs: a step up the value scale from the canopy trees,
+   *  so a hedge line reads as a distinct, deliberate planting. */
+  shrub: std({ color: '#26331F', roughness: 0.95, metalness: 0 }),
+
+  /** The lit face of foliage clusters — canopies are built from two
+   *  tones so they don't read as a single flat-shaded blob. */
+  foliageLit: std({ color: '#33422A', roughness: 0.95, metalness: 0 }),
+
+  /** Small accent flowers along the beds — kept close to the gold so
+   *  they land as a warm accent rather than introducing a new hue. */
+  bloom: std({ color: '#E8C766', roughness: 0.6, metalness: 0.05 }),
+  blossomBone: std({ color: '#DCD6C6', roughness: 0.7, metalness: 0 }),
+
+  /** Stepping-stones through the lawn. */
+  stone: std({ color: '#8D897E', roughness: 0.9, metalness: 0.02 }),
+
+  /** Terracotta planter pots by the entrance. */
+  terracotta: std({ color: '#7A4630', roughness: 0.85, metalness: 0 }),
 } as const
 
 /** The two ends of the blockwork's finish: raw block, and the render
