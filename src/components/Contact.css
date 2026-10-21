@@ -76,26 +76,87 @@
   line-height: 1.5;
 }
 
-.contact__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.95rem 1.5rem;
-  background: var(--gold);
-  color: #000;
-  font-family: var(--font-tech);
-  font-size: var(--t-small);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: background-color var(--dur) var(--ease-out);
-}
-
-.contact__cta:hover { background: #fff; }
-.contact__cta svg { transition: transform var(--dur) var(--ease-out); }
-.contact__cta:hover svg { transform: translateX(4px); }
-
 .contact__hours { color: var(--bone-3); }
 
+/* --- Enquiry form ---------------------------------------------- */
+
+.enquiry {
+  display: grid;
+  gap: 1.35rem 1.5rem;
+}
+
+.field { display: grid; gap: 0.5rem; min-inline-size: 0; }
+
+.field label { color: var(--bone-3); }
+.field label span { letter-spacing: 0.08em; text-transform: none; }
+
+/* Inputs are drawn as a single baseline, the way a value is written
+   into a box on a drawing schedule. */
+.field input,
+.field select,
+.field textarea {
+  inline-size: 100%;
+  /* 16px minimum stops iOS zooming the page on focus. */
+  font-size: max(1rem, var(--t-body));
+  padding: 0.8rem 0.9rem;
+  background: var(--ink-raise);
+  border: 1px solid var(--ink-line-2);
+  border-radius: 0;
+  color: var(--bone);
+  transition: border-color var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out);
+}
+
+.field select {
+  appearance: none;
+  padding-inline-end: 2.5rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--bronze) 50%),
+    linear-gradient(135deg, var(--bronze) 50%, transparent 50%);
+  background-position: calc(100% - 1.15rem) 50%, calc(100% - 0.8rem) 50%;
+  background-size: 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+}
+
+.field select option { background: var(--ink-raise); color: var(--bone); }
+
+.field textarea { resize: vertical; min-block-size: 8rem; line-height: 1.5; }
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover { border-color: var(--bronze-dim); }
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--gold);
+  background-color: #0F0F10;
+}
+
+.enquiry__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-block-start: 0.5rem;
+}
+
+.enquiry__note {
+  color: var(--bone-3);
+  font-size: var(--t-small);
+  max-width: 36ch;
+}
+
+@media (max-width: 40rem) {
+  .enquiry__foot { flex-direction: column; align-items: stretch; }
+}
+
+@media (min-width: 40rem) {
+  .enquiry { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .field--wide { grid-column: 1 / -1; }
+}
+
 @media (min-width: 56rem) {
-  .contact { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+  .contact { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .contact__panel { position: sticky; top: calc(var(--nav-h) + 1.5rem); }
 }

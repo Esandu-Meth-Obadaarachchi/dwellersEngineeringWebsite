@@ -1,19 +1,10 @@
 import type { ReactNode } from 'react'
 import { Reveal } from './Reveal'
-import { sections } from '../data/company'
-
-type SectionId = (typeof sections)[number]['id']
-
-/** Looks up a section's grid reference and sheet number from the
- *  register, so the numbering can never drift from the nav. */
-function meta(id: SectionId) {
-  const found = sections.find((s) => s.id === id)
-  if (!found) throw new Error(`Unknown section: ${id}`)
-  return found
-}
+import { sectionMeta } from '../data/site'
 
 export type SectionProps = {
-  id: SectionId
+  /** Must be registered in src/data/site.ts, which owns the numbering. */
+  id: string
   title: string
   /** The short note that sits in the title block beside the sheet number. */
   note?: string
@@ -29,7 +20,7 @@ export type SectionProps = {
  * corner of the company's real drawings.
  */
 export function Section({ id, title, note, children, className }: SectionProps) {
-  const { sheet, grid } = meta(id)
+  const { sheet, grid } = sectionMeta(id)
 
   return (
     <section

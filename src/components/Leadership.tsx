@@ -8,10 +8,9 @@ import {
 } from '../data/company'
 import './Leadership.css'
 
-export function Leadership() {
+export function Directors() {
   return (
-    <Section id="leadership" title="Who builds it" note="Directors · Technical">
-      {/* --- Executive directors ------------------------------- */}
+    <Section id="directors" title="Who builds it" note="Executive directors">
       <div className="directors">
         {directors.map((d, i) => (
           <Reveal as="article" key={d.name} className="director" delay={i * 120}>
@@ -50,14 +49,14 @@ export function Leadership() {
           </p>
         ))}
       </Reveal>
+    </Section>
+  )
+}
 
-      {/* --- Technical expertise ------------------------------- */}
+export function Expertise() {
+  return (
+    <Section id="expertise" title="Technical expertise" note="Chartered and specialist appointments">
       <div className="expertise">
-        <Reveal className="expertise__head">
-          <h3>Technical expertise</h3>
-          <p className="tech">Chartered and specialist appointments</p>
-        </Reveal>
-
         <div className="expertise__grid">
           {technicalExpertise.map((p, i) => (
             <Reveal as="article" key={p.role} className="expert" delay={i * 110}>
@@ -69,8 +68,13 @@ export function Leadership() {
           ))}
         </div>
       </div>
+    </Section>
+  )
+}
 
-      {/* --- The wider team ------------------------------------ */}
+export function Team() {
+  return (
+    <Section id="team" title="Our people" note="The wider team">
       <div className="team">
         <Reveal className="team__figure">
           <picture>

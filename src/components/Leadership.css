@@ -103,22 +103,6 @@
 
 /* --- Technical expertise --------------------------------------- */
 
-.expertise { margin-block-start: clamp(3rem, 7vw, 5rem); }
-
-.expertise__head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.6rem 2rem;
-  padding-block-end: 1rem;
-  border-block-end: 1px solid var(--ink-line-2);
-  margin-block-end: clamp(1.5rem, 4vw, 2.5rem);
-}
-
-.expertise__head h3 { font-size: var(--t-h2); }
-.expertise__head p { color: var(--bone-3); }
-
 .expertise__grid {
   display: grid;
   gap: clamp(1.75rem, 4vw, 3rem);
@@ -148,7 +132,6 @@
 /* --- Team ------------------------------------------------------ */
 
 .team {
-  margin-block-start: clamp(3rem, 7vw, 5rem);
   display: grid;
   gap: clamp(1.75rem, 4vw, 3rem);
   align-items: center;

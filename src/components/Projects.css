@@ -1,0 +1,81 @@
+.portfolio-empty {
+  display: grid;
+  gap: 1.2rem;
+  justify-items: start;
+  padding: clamp(1.75rem, 4vw, 3rem);
+  border: 1px solid var(--ink-line-2);
+  background-color: var(--ink-raise);
+}
+
+.portfolio-empty > p:not(.tech) { color: var(--bone-2); max-width: 46ch; }
+
+/* --- Filter ---------------------------------------------------- */
+
+.portfolio-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block-end: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.portfolio-filter button {
+  min-block-size: 2.75rem;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--ink-line-2);
+  border-radius: 999px;
+  font-size: var(--t-small);
+  color: var(--bone-2);
+  transition: border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out),
+              background-color var(--dur) var(--ease-out);
+}
+
+.portfolio-filter button:hover { border-color: var(--bronze); color: var(--bone); }
+
+.portfolio-filter button[aria-pressed='true'] {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #000;
+}
+
+/* --- Grid ------------------------------------------------------ */
+
+.portfolio {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.project { display: grid; gap: 1rem; align-content: start; }
+
+.project__cover img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid var(--ink-line-2);
+  filter: grayscale(1) contrast(1.1) brightness(0.8);
+  transition: filter var(--dur-slow) var(--ease-out);
+}
+
+.project:hover .project__cover img { filter: grayscale(0.2) contrast(1.05) brightness(0.9); }
+
+.project__body { display: grid; gap: 0.45rem; }
+
+.project__meta { display: flex; flex-wrap: wrap; gap: 0.5rem; color: var(--bone-3); }
+
+.project__title {
+  font-size: var(--t-h3);
+  line-height: 1.05;
+  color: var(--bone);
+}
+
+.project__summary { color: var(--bone-2); max-width: 46ch; }
+
+@media (min-width: 46rem) {
+  .portfolio { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 72rem) {
+  .portfolio { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

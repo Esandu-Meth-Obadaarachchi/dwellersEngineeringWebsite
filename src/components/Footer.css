@@ -72,6 +72,14 @@
   );
 }
 
+.footer__no { color: var(--bronze-dim); margin-inline-end: 0.6rem; letter-spacing: 0.08em; }
+
 @media (min-width: 46rem) {
-  .footer__inner { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); }
+  .footer__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+
+@media (min-width: 64rem) {
+  .footer__inner {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
 }

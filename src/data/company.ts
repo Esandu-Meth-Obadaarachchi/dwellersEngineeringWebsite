@@ -146,16 +146,3 @@ export const sustainability = {
     'Guided by a philosophy of continuous innovation and operational excellence, we seamlessly integrate sustainable practices into every aspect of our work. Our approach is designed not only to minimize environmental impact but also to create enduring value — delivering sophisticated, future-ready solutions that benefit our clients, communities, and the environment alike.',
   ],
 } as const
-
-/** Section register — drives the nav, the grid bubbles and the
- *  sheet numbering. Letters are the column grid references. */
-export const sections = [
-  { id: 'build',          grid: 'A', sheet: '01', nav: 'The Build' },
-  { id: 'about',          grid: 'B', sheet: '02', nav: 'About' },
-  { id: 'services',       grid: 'C', sheet: '03', nav: 'Services' },
-  { id: 'method',         grid: 'D', sheet: '04', nav: 'Method' },
-  { id: 'leadership',     grid: 'E', sheet: '05', nav: 'Leadership' },
-  { id: 'values',         grid: 'F', sheet: '06', nav: 'Values' },
-  { id: 'sustainability', grid: 'G', sheet: '07', nav: 'Sustainability' },
-  { id: 'contact',        grid: 'H', sheet: '08', nav: 'Contact' },
-] as const

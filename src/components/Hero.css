@@ -101,16 +101,6 @@
      brand signal above the fold. */
 }
 
-@keyframes line-up {
-  from { transform: translateY(0.9em); opacity: 0; }
-  to   { transform: none; opacity: 1; }
-}
-
-@keyframes rise-in {
-  from { transform: translateY(1.2rem); opacity: 0; }
-  to   { transform: none; opacity: 1; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero__line,
   .hero__stamp,
@@ -150,42 +140,7 @@
   font-size: var(--t-body);
 }
 
-.hero__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 0.95rem 1.6rem;
-  border: 1px solid var(--bronze);
-  color: var(--gold);
-  font-family: var(--font-tech);
-  font-size: var(--t-small);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  position: relative;
-  overflow: hidden;
-  flex: none;
-  transition: color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
-}
-
-/* Gold wipes in from the left, like a highlighter over a drawing. */
-.hero__cta::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur) var(--ease-in-out);
-  z-index: -1;
-}
-
-.hero__cta:hover,
-.hero__cta:focus-visible { color: #000; border-color: var(--gold); }
-.hero__cta:hover::before,
-.hero__cta:focus-visible::before { transform: scaleX(1); }
-
-.hero__cta svg { transition: transform var(--dur) var(--ease-out); }
-.hero__cta:hover svg { transform: translateX(4px); }
+.hero__actions { flex: none; }
 
 /* --- Ticker -------------------------------------------------- */
 
@@ -220,7 +175,6 @@
 
 @media (max-width: 40rem) {
   .hero__foot { flex-direction: column; align-items: stretch; }
-  .hero__cta { justify-content: center; }
   .hero__backdrop::after {
     background:
       linear-gradient(to top, var(--ink-sunk) 10%, rgba(5, 5, 5, 0.42) 54%, rgba(5, 5, 5, 0.78) 100%);

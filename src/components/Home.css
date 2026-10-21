@@ -1,0 +1,183 @@
+/* --- Overview -------------------------------------------------- */
+
+.overview {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4rem);
+  align-items: start;
+}
+
+.overview__lead p {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-stretch: 110%;
+  font-size: var(--t-h3);
+  line-height: 1.32;
+  letter-spacing: -0.012em;
+  color: var(--bone);
+  max-width: 34ch;
+  margin-block-end: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+/* Four counts, set as a schedule: a gold number over a mono label,
+   ruled like the cells of a drawing table. */
+.facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--ink-line-2);
+  border: 1px solid var(--ink-line-2);
+}
+
+.facts > li { background: var(--ink); }
+
+.fact {
+  display: grid;
+  gap: 0.5rem;
+  block-size: 100%;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  transition: background-color var(--dur) var(--ease-out);
+}
+
+.fact__value {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-stretch: 118%;
+  font-size: var(--t-h1);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.fact__label { color: var(--bone-3); transition: color var(--dur) var(--ease-out); }
+
+.fact:hover,
+.fact:focus-visible { background: var(--ink-raise); }
+.fact:hover .fact__label { color: var(--bone); }
+
+/* --- Sheet index ----------------------------------------------- */
+
+.sheets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+  background: var(--ink-line-2);
+  border: 1px solid var(--ink-line-2);
+}
+
+.sheets > li { background: var(--ink); }
+
+.sheet-card {
+  position: relative;
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+  block-size: 100%;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  overflow: hidden;
+  isolation: isolate;
+  transition: background-color var(--dur) var(--ease-out);
+}
+
+/* The hatch arrives on hover: the card is "cut" when you point at it. */
+.sheet-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--bronze) 14%, transparent) 0 1px,
+    transparent 1px 10px
+  );
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease-out);
+}
+
+.sheet-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sheet-card__no { color: var(--bone-3); }
+
+.sheet-card__grid { display: flex; gap: 0.3rem; }
+.sheet-card__grid .bubble { --size: 1.6rem; font-size: 0.6rem; }
+
+.sheet-card__title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-stretch: 116%;
+  text-transform: uppercase;
+  font-size: var(--t-h2);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  color: var(--bone);
+  margin-block-start: clamp(0.75rem, 3vw, 2rem);
+  transition: color var(--dur) var(--ease-out);
+}
+
+.sheet-card__summary { color: var(--bone-2); max-width: 36ch; }
+
+.sheet-card__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-block-start: 0.5rem;
+  color: var(--bronze);
+  transition: color var(--dur) var(--ease-out);
+}
+
+.sheet-card__go svg { transition: transform var(--dur) var(--ease-out); }
+
+.sheet-card:hover,
+.sheet-card:focus-visible { background: var(--ink-raise); }
+.sheet-card:hover::before,
+.sheet-card:focus-visible::before { opacity: 1; }
+.sheet-card:hover .sheet-card__title,
+.sheet-card:focus-visible .sheet-card__title { color: var(--gold); }
+.sheet-card:hover .sheet-card__go,
+.sheet-card:focus-visible .sheet-card__go { color: var(--gold); }
+.sheet-card:hover .sheet-card__go svg { transform: translateX(4px); }
+.sheet-card:hover .bubble { border-color: var(--bronze); }
+
+/* --- Enquire band ---------------------------------------------- */
+
+.section--enquire {
+  background:
+    radial-gradient(90% 120% at 100% 0%, rgba(255, 222, 89, 0.07), transparent 58%),
+    var(--ink-sunk);
+}
+
+.enquire {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 2.5rem);
+  align-items: end;
+}
+
+.enquire__text {
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  line-height: 1.5;
+  color: var(--bone);
+  max-width: 40ch;
+}
+
+@media (min-width: 46rem) {
+  .sheets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* An odd count leaves a hole in the last row, and the grid's own
+     gap colour shows through it. The last card takes the row. */
+  .sheets > li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+
+@media (min-width: 56rem) {
+  .overview { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+  .enquire { grid-template-columns: minmax(0, 1fr) auto; }
+}

@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import { Section } from './Sections'
 import { Reveal } from './Reveal'
+import { Arrow } from './Arrow'
 import { services, process } from '../data/company'
 import './Services.css'
 
@@ -65,7 +67,7 @@ export function Services() {
  * The method, as a numbered sequence — the one place on this page
  * where numbering is genuinely ordinal, because the stages happen in
  * this order and no other. These are the same six stages the 3D build
- * sequence steps through.
+ * sequence on the home page steps through.
  */
 export function Method() {
   return (
@@ -83,14 +85,14 @@ export function Method() {
         ))}
       </ol>
 
-      <Reveal className="process__note">
-        <div className="dim dim--long">
-          <span className="dim__line" />
-          <span className="dim__value">
-            Watch these six stages build, above
-          </span>
-          <span className="dim__line" />
-        </div>
+      <Reveal className="process__note btn-row">
+        <Link className="btn btn--line" to="/#build">
+          <span>Watch the six stages build</span>
+          <Arrow />
+        </Link>
+        <Link className="btn btn--quiet" to="/contact">
+          <span>Start at stage 01</span>
+        </Link>
       </Reveal>
     </Section>
   )

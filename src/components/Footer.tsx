@@ -1,4 +1,6 @@
+import { Link } from 'react-router'
 import { company, services } from '../data/company'
+import { pages } from '../data/site'
 import { Crest } from './Crest'
 import './Footer.css'
 
@@ -16,12 +18,26 @@ export function Footer() {
           <p className="footer__tagline tech">{company.tagline}</p>
         </div>
 
+        <nav className="footer__col" aria-label="Footer">
+          <p className="tech footer__head">Drawing set</p>
+          <ul>
+            {pages.map((p) => (
+              <li key={p.path}>
+                <Link to={p.path}>
+                  <span className="footer__no tech" aria-hidden="true">{p.sheet}</span>
+                  {p.nav}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
         <div className="footer__col">
           <p className="tech footer__head">Services</p>
           <ul>
             {services.map((s) => (
               <li key={s.code}>
-                <a href="#services">{s.name}</a>
+                <Link to="/services#services">{s.name}</Link>
               </li>
             ))}
           </ul>

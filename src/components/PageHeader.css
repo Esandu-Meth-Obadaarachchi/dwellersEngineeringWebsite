@@ -1,0 +1,135 @@
+.page-head {
+  position: relative;
+  padding-block: calc(var(--nav-h) + clamp(2.5rem, 8vh, 5.5rem)) clamp(2.5rem, 6vh, 4rem);
+  background: var(--ink-sunk);
+  border-block-end: 1px solid var(--ink-line-2);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Section hatching that fades out to the left: the header is the
+   cut face of the sheet, and the hatch must not sit behind the type. */
+.hatch-fade::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: repeating-linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--bronze) 14%, transparent) 0 1px,
+    transparent 1px 11px
+  );
+  mask-image: linear-gradient(to left, #000 0%, transparent 62%);
+  -webkit-mask-image: linear-gradient(to left, #000 0%, transparent 62%);
+}
+
+.page-head__crumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  color: var(--bone-3);
+  margin-block-end: clamp(1.5rem, 4vh, 2.5rem);
+  animation: rise-in 700ms var(--ease-out) both;
+}
+
+.page-head__crumb a {
+  color: var(--bronze);
+  transition: color var(--dur) var(--ease-out);
+}
+.page-head__crumb a:hover { color: var(--gold); }
+
+.page-head__title {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(0.75rem, 2.5vw, 2rem);
+}
+
+.page-head__no {
+  font-family: var(--font-tech);
+  font-weight: 300;
+  font-size: clamp(1.1rem, 2.6vw, 2rem);
+  line-height: 1;
+  color: var(--bronze-dim);
+  padding-block-start: 0.35em;
+  font-variant-numeric: tabular-nums;
+}
+
+.page-head h1 {
+  font-size: var(--t-hero);
+  line-height: 0.86;
+  letter-spacing: -0.035em;
+  font-weight: 900;
+  font-stretch: 112%;
+  color: var(--bone);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  animation: line-up 1000ms var(--ease-out) both 80ms;
+}
+
+.page-head h1:focus { outline: none; }
+
+.page-head__dim {
+  max-width: 54rem;
+  margin-block-start: clamp(1.25rem, 3.5vh, 2rem);
+  animation: rise-in 900ms var(--ease-out) both 260ms;
+}
+
+.page-head__dim .dim__value {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--bone-2);
+  text-transform: none;
+}
+
+/* --- Jump links ------------------------------------------------ */
+
+.page-head__jump {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-block-start: clamp(2rem, 5vh, 3rem);
+  animation: rise-in 900ms var(--ease-out) both 380ms;
+}
+
+.page-head__jump > p { color: var(--bone-3); }
+
+.page-head__jump ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.page-head__jump a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-block-size: 2.75rem;
+  padding: 0.35rem 1rem 0.35rem 0.35rem;
+  border: 1px solid var(--ink-line-2);
+  border-radius: 999px;
+  font-size: var(--t-small);
+  color: var(--bone-2);
+  transition: border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+
+.page-head__jump .bubble { --size: 1.9rem; }
+
+.page-head__jump a:hover,
+.page-head__jump a:focus-visible { border-color: var(--bronze); color: var(--bone); }
+.page-head__jump a:hover .bubble { background: var(--gold); border-color: var(--gold); color: #000; }
+
+/* The rail takes over once there is a margin to hold it. */
+@media (min-width: 70rem) {
+  .page-head__jump { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-head__crumb,
+  .page-head h1,
+  .page-head__dim,
+  .page-head__jump { animation: none; }
+}

@@ -5,7 +5,7 @@ import './About.css'
 
 export function About() {
   return (
-    <Section id="about" title="The company" note="Profile · Rev. A">
+    <Section id="about" title="Who we are" note="Profile · Rev. A">
       <div className="about">
         <Reveal className="about__lead">
           <p>{about.lead}</p>
