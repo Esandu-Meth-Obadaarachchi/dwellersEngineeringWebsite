@@ -1,6 +1,6 @@
 .page-head {
   position: relative;
-  padding-block: calc(var(--nav-h) + clamp(2.5rem, 8vh, 5.5rem)) clamp(2.5rem, 6vh, 4rem);
+  padding-block: calc(var(--nav-h) + clamp(1.5rem, 5vh, 3rem)) clamp(1.75rem, 4vh, 2.75rem);
   background: var(--ink-sunk);
   border-block-end: 1px solid var(--ink-line-2);
   overflow: hidden;
@@ -28,7 +28,7 @@
   flex-wrap: wrap;
   gap: 0.6rem;
   color: var(--bone-3);
-  margin-block-end: clamp(1.5rem, 4vh, 2.5rem);
+  margin-block-end: clamp(1rem, 2.5vh, 1.5rem);
   animation: rise-in 700ms var(--ease-out) both;
 }
 
@@ -47,7 +47,7 @@
 .page-head__no {
   font-family: var(--font-tech);
   font-weight: 300;
-  font-size: clamp(1.1rem, 2.6vw, 2rem);
+  font-size: clamp(0.9rem, 1.6vw, 1.3rem);
   line-height: 1;
   color: var(--bronze-dim);
   padding-block-start: 0.35em;
@@ -55,8 +55,10 @@
 }
 
 .page-head h1 {
-  font-size: var(--t-hero);
-  line-height: 0.86;
+  /* A page label, not a hero: kept below the section titles' scale so
+     the content starts within the first screen. */
+  font-size: clamp(1.9rem, 4.2vw, 3.4rem);
+  line-height: 0.9;
   letter-spacing: -0.035em;
   font-weight: 900;
   font-stretch: 112%;
@@ -70,7 +72,7 @@
 
 .page-head__dim {
   max-width: 54rem;
-  margin-block-start: clamp(1.25rem, 3.5vh, 2rem);
+  margin-block-start: clamp(0.9rem, 2.5vh, 1.4rem);
   animation: rise-in 900ms var(--ease-out) both 260ms;
 }
 
@@ -88,7 +90,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem 1.5rem;
-  margin-block-start: clamp(2rem, 5vh, 3rem);
+  margin-block-start: clamp(1.25rem, 3vh, 2rem);
   animation: rise-in 900ms var(--ease-out) both 380ms;
 }
 
