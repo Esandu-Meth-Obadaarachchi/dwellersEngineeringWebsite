@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { ease, easeOutCubic, span, clamp01 } from './progress'
 import type { Window } from './schedule'
+import { Merge } from './Merge'
 
 type Mode =
   /** Grows upward from its own base — cast concrete, blockwork, planting. */
@@ -22,6 +23,9 @@ export type AssemblyProps = {
   mode?: Mode
   /** Travel distance for `crane` and `sink`, in scene units. */
   drop?: number
+  /** Bake the children into one mesh per material (see `Merge`). Only
+   *  for static children: no refs, no animation of their own. */
+  merge?: boolean
   children: ReactNode
 }
 
@@ -38,6 +42,7 @@ export function Assembly({
   length = 1,
   mode = 'rise',
   drop = 6,
+  merge = false,
   children,
 }: AssemblyProps) {
   const group = useRef<THREE.Group>(null!)
@@ -72,7 +77,7 @@ export function Assembly({
     }
   })
 
-  return <group ref={group}>{children}</group>
+  return <group ref={group}>{merge ? <Merge>{children}</Merge> : children}</group>
 }
 
 /**

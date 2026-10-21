@@ -84,27 +84,43 @@ sheet — the sheet frame, the title block, grid bubbles down the margin,
 dimension strings, and 45° section hatching. Each one carries a value that is
 actually true of the content beside it rather than decorating it.
 
-The centrepiece is a scroll-driven 3D build sequence: a house assembles itself
-from bare site to handover — setting out, excavation, pad footings, ground
-beams, reinforcement cages, columns, suspended slabs, blockwork, roof, glazing
-— followed by a swimming pool, a steel shed and landscaping. The six phases of
-the animation are the six stages of the company's stated process, so the model
-and the text tell the same story.
+The centrepiece is a scroll-driven 3D build sequence: a two-storey tropical
+modern villa with a roof terrace assembles itself from bare site to handover —
+setting out, excavation, pad footings, ground beams, reinforcement cages,
+columns and cantilevered slabs level by level, blockwork, a ledgestone blade
+wall, render and paint, the roof terrace and pergola, glazing and interiors —
+followed by the pool and deck, a carport (the car drives in), and the garden.
+At handover the light turns to dusk and the house lights up from inside. The
+six phases of the animation are the six stages of the company's stated
+process, so the model and the text tell the same story.
+
+The villa is defined as data in `src/three/villa.ts`: footprints, column grid,
+slabs, and every wall with its openings. Structure, blockwork, render, glazing
+and the gold ghost outline are all generated from it, so the house can be
+redesigned in that one file.
 
 ## Performance
 
 Old laptops and phones are the constraint, so the scene is budgeted:
 
-- All geometry is procedural — no model or texture downloads.
-- Repeated elements (blockwork, roof tiles, rebar, paving, fence) are
-  `InstancedMesh`; per-instance matrices are only rewritten while that element's
-  phase is on screen.
-- No shadow maps and no environment map. Contact shadow is a single generated
-  radial gradient.
+- All geometry is procedural — no model downloads.
+- Textures (plaster, concrete, ledgestone, teak, paving, grass, pool mosaic)
+  are painted onto canvases in code at load, with UVs in metres so every
+  surface is at true scale. No image files are fetched.
+- Reflections come from an environment map generated in code from three.js's
+  `RoomEnvironment`; no HDR download.
+- The sun casts soft shadows on mid and high tier devices only. Low tier
+  skips shadow maps and relies on the environment light.
+- Static parts are merged into one mesh per material once mounted
+  (`src/three/Merge.tsx`), which takes the handover frame from ~1,100 draw
+  calls to ~230, shadow pass included.
+- Repeated elements (blockwork, shrubs, flowers) are `InstancedMesh`;
+  per-instance matrices are only rewritten while that element's phase is on
+  screen.
 - Scroll progress lives in a ref, so scrolling animates the scene without
   re-rendering React.
-- Device tier (`src/hooks/useDeviceTier.ts`) caps device pixel ratio, instance
-  counts and geometry segments.
+- Device tier (`src/hooks/useDeviceTier.ts`) caps device pixel ratio, shadow
+  resolution, instance counts and geometry segments.
 - The canvas renders only while it is on screen.
 - The camera path is re-fitted to the viewport's aspect rather than re-authored,
   so a portrait phone gets a wider lens and more distance instead of a cropped
@@ -167,7 +183,8 @@ re-measured):
 | First load, gzipped (HTML + CSS + app + React + router) | ~89 kB |
 | 3D chunk, gzipped — requested after first paint | ~216 kB |
 
-Per animation frame, while scrubbing the entire build sequence:
+Per animation frame, while scrubbing the entire build sequence (measured
+on the earlier, simpler house; re-measure on the villa on a real device):
 
 | | script | total task |
 | --- | --- | --- |

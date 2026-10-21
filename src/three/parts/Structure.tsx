@@ -1,102 +1,108 @@
 import { useMemo } from 'react'
 import { M } from '../materials'
 import { Assembly } from '../Assembly'
+import { boxGeo } from '../geometry'
+import { PHASE, frameWindow } from '../schedule'
 import {
-  PHASE, HOUSE, GRID_X, GRID_Z, HOUSE_CX, HOUSE_CZ, HOUSE_W, HOUSE_D,
-} from '../schedule'
+  GRID_X, GRID_Z, COL, PAD_H, BEAM_H, LEVEL_Y, SLABS, SLAB_T, GROUND,
+  PAVILION_COLS, PAVILION_ROOF_Y, STONE_WALL, rectW, rectD, rectCX, rectCZ,
+} from '../villa'
 
-const PAD = { w: 1.5, h: 0.42 }
-const BEAM = { w: 0.34, h: 0.46 }
+const PAD = 1.6
+const BEAM_W = 0.32
 
-/** A reinforcement cage: four main bars and a run of links.
- *  Built once and reused at every column position. */
+/** A reinforcement cage: four main bars and a run of links. */
 function RebarCage({ height, segments }: { height: number; segments: number }) {
-  const spread = HOUSE.colW * 0.3
-  const bars = useMemo(
-    () => [
-      [-spread, -spread], [spread, -spread], [spread, spread], [-spread, spread],
-    ] as const,
-    [spread],
-  )
-  const links = useMemo(
-    () => Array.from({ length: Math.max(3, Math.round(height / 0.55)) }, (_, i) => i),
-    [height],
-  )
+  const spread = COL * 0.32
+  const links = Math.max(3, Math.round(height / 0.5))
+  const radial = Math.max(5, segments >> 1)
 
   return (
     <group>
-      {bars.map(([x, z], i) => (
-        <mesh key={i} position={[x, height / 2, z]} material={M.steel}>
-          <cylinderGeometry args={[0.028, 0.028, height, Math.max(5, segments >> 1)]} />
+      {[[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([x, z], i) => (
+        <mesh key={i} position={[x * spread, height / 2, z * spread]} material={M.steel}>
+          <cylinderGeometry args={[0.022, 0.022, height, radial]} />
         </mesh>
       ))}
-      {links.map((i) => {
-        const y = 0.16 + (i * (height - 0.3)) / Math.max(1, links.length - 1)
-        return (
-          <mesh key={i} position-y={y} rotation-x={Math.PI / 2} material={M.steel}>
-            <torusGeometry args={[spread * 1.42, 0.022, 4, Math.max(6, segments >> 1)]} />
-          </mesh>
-        )
-      })}
+      {Array.from({ length: links }, (_, i) => (
+        <mesh
+          key={i}
+          position-y={0.15 + (i * (height - 0.3)) / Math.max(1, links - 1)}
+          rotation-x={Math.PI / 2}
+          material={M.steel}
+        >
+          <torusGeometry args={[spread * 1.42, 0.016, 4, radial]} />
+        </mesh>
+      ))}
     </group>
   )
 }
 
+type Column = { x: number; z: number; base: number; h: number; level: number; order: number }
+
 /**
- * Everything that carries load: pad footings, ground beams,
- * reinforcement, columns, suspended slabs and the stair.
+ * Everything that carries load: pad footings, ground beams, the strip
+ * footing under the stone wall, reinforcement, columns and the three
+ * suspended slabs.
  *
  * The sequence is the real one. Footings are cast, beams span between
  * them, cages are stood and tied, columns are cast around the cages,
- * and only then does a slab arrive on top. Nothing floats.
+ * and only then does a slab arrive on top. Each level's columns stand
+ * on the slab below. Nothing floats.
  */
 export function Structure({ segments }: { segments: number }) {
-  const columns = useMemo(() => {
-    const out: { x: number; z: number; i: number }[] = []
-    let i = 0
-    for (const x of GRID_X) for (const z of GRID_Z) out.push({ x, z, i: i++ })
+  const pads = useMemo(() => {
+    const out: { x: number; z: number }[] = []
+    for (const x of GRID_X) for (const z of GRID_Z) out.push({ x, z })
     return out
   }, [])
 
-  /** Ground beams run along both grid directions between columns. */
   const beams = useMemo(() => {
-    const out: { pos: [number, number, number]; size: [number, number, number] }[] = []
-    for (const z of GRID_Z) {
-      out.push({
-        pos: [HOUSE_CX, 0, z],
-        size: [HOUSE_W, BEAM.h, BEAM.w],
-      })
-    }
-    for (const x of GRID_X) {
-      out.push({
-        pos: [x, 0, HOUSE_CZ],
-        size: [BEAM.w, BEAM.h, HOUSE_D],
-      })
-    }
-    return out
+    const y = PAD_H + BEAM_H / 2
+    const w = GRID_X[GRID_X.length - 1] - GRID_X[0]
+    const d = GRID_Z[GRID_Z.length - 1] - GRID_Z[0]
+    return [
+      ...GRID_Z.map((z) => ({ x: (GRID_X[0] + GRID_X[GRID_X.length - 1]) / 2, y, z, s: [w + BEAM_W, BEAM_H, BEAM_W] })),
+      ...GRID_X.map((x) => ({ x, y, z: (GRID_Z[0] + GRID_Z[GRID_Z.length - 1]) / 2, s: [BEAM_W, BEAM_H, d + BEAM_W] })),
+    ] as { x: number; y: number; z: number; s: [number, number, number] }[]
   }, [])
 
-  const storeys = useMemo(
-    () => Array.from({ length: HOUSE.storeys }, (_, i) => i),
-    [],
-  )
+  const columns = useMemo(() => {
+    const out: Column[] = []
+    for (const level of [0, 1]) {
+      const base = level === 0 ? PAD_H + BEAM_H : LEVEL_Y[level]
+      const top = LEVEL_Y[level + 1] - SLAB_T
+      let i = 0
+      for (const x of GRID_X) {
+        for (const z of GRID_Z) {
+          out.push({ x, z, base, h: top - base, level, order: i++ / (GRID_X.length * GRID_Z.length) })
+        }
+      }
+    }
+    const pTop = PAVILION_ROOF_Y - SLABS[2].t
+    PAVILION_COLS.forEach(([x, z], i) =>
+      out.push({ x, z, base: LEVEL_Y[2], h: pTop - LEVEL_Y[2], level: 2, order: i / 4 }),
+    )
+    return out
+  }, [])
 
   return (
     <group>
       {/* --- Pad footings ------------------------------------- */}
-      {columns.map(({ x, z, i }) => (
-        <Assembly
-          key={`pad-${i}`}
-          window={PHASE.footings}
-          offset={(i / columns.length) * 0.45}
-          length={0.55}
-          mode="rise"
-        >
-          <mesh position={[x, PAD.h / 2, z]} material={M.concrete}>
-            <boxGeometry args={[PAD.w, PAD.h, PAD.w]} />
-          </mesh>
+      {pads.map((p, i) => (
+        <Assembly key={`pad-${i}`} window={PHASE.footings} offset={(i / pads.length) * 0.45} length={0.55}>
+          <mesh position={[p.x, PAD_H / 2, p.z]} geometry={boxGeo(PAD, PAD_H, PAD)} material={M.concrete} />
         </Assembly>
       ))}
+
+      {/* Strip footing under the stone wall. */}
+      <Assembly window={PHASE.footings} offset={0.5} length={0.5}>
+        <mesh
+          position={[(STONE_WALL.x0 + STONE_WALL.x1) / 2, PAD_H / 2, (STONE_WALL.z0 + STONE_WALL.z1) / 2]}
+          geometry={boxGeo(1.2, PAD_H, STONE_WALL.z1 - STONE_WALL.z0 + 0.4)}
+          material={M.concrete}
+        />
+      </Assembly>
 
       {/* --- Ground beams ------------------------------------- */}
       {beams.map((b, i) => (
@@ -108,99 +114,43 @@ export function Structure({ segments }: { segments: number }) {
           mode="crane"
           drop={3}
         >
-          <mesh position={[b.pos[0], PAD.h + BEAM.h / 2, b.pos[2]]} material={M.concrete}>
-            <boxGeometry args={b.size} />
-          </mesh>
+          <mesh position={[b.x, b.y, b.z]} geometry={boxGeo(...b.s)} material={M.concrete} />
         </Assembly>
       ))}
 
-      {/* --- Cages, then columns, storey by storey ------------- */}
-      {storeys.map((s) =>
-        columns.map(({ x, z, i }) => {
-          const base = PAD.h + (s === 0 ? BEAM.h : 0) + s * HOUSE.floorH
-          const h = HOUSE.floorH - (s === 0 ? BEAM.h : 0)
-          const stagger = ((s * columns.length + i) / (columns.length * HOUSE.storeys)) * 0.5
+      {/* --- Ground floor slab on grade ----------------------- */}
+      <Assembly window={PHASE.groundBeams} offset={0.45} length={0.55} mode="fade">
+        <mesh
+          position={[rectCX(GROUND), LEVEL_Y[0] - 0.065, rectCZ(GROUND)]}
+          geometry={boxGeo(rectW(GROUND) + 0.3, 0.13, rectD(GROUND) + 0.3)}
+          material={M.screed}
+        />
+      </Assembly>
 
-          return (
-            <group key={`col-${s}-${i}`} position={[x, base, z]}>
-              {/* Cage goes up first… */}
-              <Assembly window={PHASE.columns} offset={stagger} length={0.32} mode="rise">
-                <RebarCage height={h * 0.94} segments={segments} />
-              </Assembly>
-              {/* …and the pour follows it. */}
-              <Assembly
-                window={PHASE.columns}
-                offset={stagger + 0.18}
-                length={0.34}
-                mode="rise"
-              >
-                <mesh position-y={h / 2} material={M.concrete}>
-                  <boxGeometry args={[HOUSE.colW, h, HOUSE.colW]} />
-                </mesh>
-              </Assembly>
-            </group>
-          )
-        }),
-      )}
-
-      {/* --- Suspended slabs ---------------------------------- */}
-      {storeys.map((s) => {
-        const y = PAD.h + BEAM.h + (s + 1) * HOUSE.floorH - HOUSE.floorH * 0.02
+      {/* --- Cages, then columns, level by level --------------- */}
+      {columns.map((c, i) => {
+        const win = frameWindow(c.level, 'columns')
         return (
-          <group key={`slab-${s}`}>
-            {/* Edge beams around the perimeter, then the deck. */}
-            <Assembly
-              window={PHASE.slabs}
-              offset={s * 0.34}
-              length={0.36}
-              mode="crane"
-              drop={4.5}
-            >
-              <mesh position={[HOUSE_CX, y + HOUSE.slabT / 2, HOUSE_CZ]} material={M.concrete}>
-                <boxGeometry args={[HOUSE_W + 0.7, HOUSE.slabT, HOUSE_D + 0.7]} />
-              </mesh>
+          <group key={`col-${i}`} position={[c.x, c.base, c.z]}>
+            <Assembly window={win} offset={c.order * 0.4} length={0.35} merge>
+              <RebarCage height={c.h * 0.96} segments={segments} />
+            </Assembly>
+            <Assembly window={win} offset={c.order * 0.4 + 0.25} length={0.35}>
+              <mesh position-y={c.h / 2} geometry={boxGeo(COL, c.h, COL)} material={M.frame} />
             </Assembly>
           </group>
         )
       })}
 
-      {/* --- Ground floor slab on grade ----------------------- */}
-      <Assembly window={PHASE.groundBeams} offset={0.45} length={0.55} mode="fade">
-        <mesh
-          position={[HOUSE_CX, PAD.h + BEAM.h + 0.06, HOUSE_CZ]}
-          material={M.screed}
-        >
-          <boxGeometry args={[HOUSE_W, 0.12, HOUSE_D]} />
-        </mesh>
-      </Assembly>
-
-      {/* --- Stair: a real flight, not a decorative zigzag ----- */}
-      <Assembly window={PHASE.slabs} offset={0.45} length={0.55} mode="rise">
-        <Stair />
-      </Assembly>
-    </group>
-  )
-}
-
-/** A straight flight from ground to first floor, inside the frame. */
-function Stair() {
-  const risers = 14
-  const rise = HOUSE.floorH / risers
-  const going = 0.27
-  const base = PAD.h + BEAM.h + 0.12
-  const x = HOUSE_CX + 3.1
-  const z0 = HOUSE_CZ - (risers * going) / 2
-
-  return (
-    <group>
-      {Array.from({ length: risers }, (_, i) => (
-        <mesh
-          key={i}
-          position={[x, base + rise * (i + 0.5), z0 + going * (i + 0.5)]}
-          material={M.concrete}
-        >
-          <boxGeometry args={[1.15, rise, going]} />
-        </mesh>
+      {/* --- Suspended slabs ---------------------------------- */}
+      {SLABS.map((s) => (
+        <Assembly key={`slab-${s.level}`} window={frameWindow(s.level - 1, 'slab')} mode="crane" drop={5}>
+          <mesh
+            position={[rectCX(s), s.top - s.t / 2, rectCZ(s)]}
+            geometry={boxGeo(rectW(s), s.t, rectD(s))}
+            material={M.frame}
+          />
+        </Assembly>
       ))}
     </group>
   )

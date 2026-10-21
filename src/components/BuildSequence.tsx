@@ -78,7 +78,7 @@ export function BuildSequence() {
         <div className="build__hud" aria-hidden="true">
           <div className="build__hud-tl">
             <span className="tech tech--gold">Dwellers Engineering</span>
-            <span className="tech">Type A residence · Two storey · Pool · Store</span>
+            <span className="tech">Tropical villa · Two storey · Roof terrace · Pool · Carport</span>
           </div>
 
           <div className="build__hud-tr tech">
