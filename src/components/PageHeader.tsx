@@ -5,34 +5,22 @@ import './PageHeader.css'
 /**
  * The cover of an inner sheet.
  *
- * Smaller than the home hero, and built the same way: the page name at
- * display scale, its sheet number in the margin, and a summary set as
- * a dimension note. Below it, the sheet's own gridlines as jump links,
- * because a phone has no margin for the rail.
+ * Just the breadcrumb, so the first section starts straight under the
+ * bar. The page name in it is still the page's h1, for screen readers
+ * and search. On narrow screens the sheet's gridlines follow as jump
+ * links, because a phone has no margin for the rail.
  */
 export function PageHeader({ page }: { page: Page }) {
   return (
     <header className="page-head hatch-fade">
       <div className="shell">
-        <p className="page-head__crumb tech">
+        <div className="page-head__crumb tech">
           <Link to="/">Home</Link>
           <span aria-hidden="true">/</span>
-          <span>Sheet {page.sheet}</span>
-        </p>
-
-        <div className="page-head__title">
-          <span className="page-head__no" aria-hidden="true">
-            {page.sheet}
-          </span>
+          <span className="page-head__no" aria-hidden="true">{page.sheet}</span>
           <h1 id="page-title" tabIndex={-1}>
             {page.title}
           </h1>
-        </div>
-
-        <div className="page-head__dim dim dim--long">
-          <span className="dim__line" />
-          <span className="dim__value">{page.summary}</span>
-          <span className="dim__line" />
         </div>
 
         {page.sections.length > 1 && (
