@@ -1,6 +1,6 @@
 .page-head {
   position: relative;
-  padding-block: calc(var(--nav-h) + clamp(1.5rem, 5vh, 3rem)) clamp(1.75rem, 4vh, 2.75rem);
+  padding-block: calc(var(--nav-h) + 1rem) 1rem;
   background: var(--ink-sunk);
   border-block-end: 1px solid var(--ink-line-2);
   overflow: hidden;
@@ -51,19 +51,6 @@
 
 .page-head h1:focus { outline: none; }
 
-.page-head__dim {
-  max-width: 54rem;
-  margin-block-start: clamp(1rem, 2.5vh, 1.5rem);
-  animation: rise-in 900ms var(--ease-out) both 260ms;
-}
-
-.page-head__dim .dim__value {
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  color: var(--bone-2);
-  text-transform: none;
-}
-
 /* --- Jump links ------------------------------------------------ */
 
 .page-head__jump {
@@ -71,7 +58,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem 1.5rem;
-  margin-block-start: clamp(1.25rem, 3vh, 2rem);
+  margin-block-start: 0.9rem;
   animation: rise-in 900ms var(--ease-out) both 380ms;
 }
 
@@ -112,6 +99,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .page-head__crumb,
-  .page-head__dim,
   .page-head__jump { animation: none; }
 }
+
+/* The section after the header starts close under it, not a full
+   section band below. */
+.page-head + .section { padding-block-start: clamp(2rem, 5vh, 3.5rem); }
