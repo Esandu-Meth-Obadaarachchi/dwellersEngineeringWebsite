@@ -28,21 +28,19 @@ export function useDeviceTier(): DeviceTier {
   }, [])
 }
 
-/** Per-tier budget for the build scene. */
+/** Per-tier budget for the build scene. `shadowMap` is the sun's
+ *  shadow resolution; 0 turns shadows off. */
 export const tierBudget = {
   low: {
-    dpr: [1, 1.25] as [number, number], bricks: 210, tiles: 120, trees: 4,
-    antialias: false, segments: 8,
-    shrubs: 10, flowers: 40, stones: 8,
+    dpr: [1, 1.25] as [number, number], bricks: 300, trees: 6, shadowMap: 0,
+    antialias: false, segments: 8, shrubs: 40, flowers: 60,
   },
   mid: {
-    dpr: [1, 1.6] as [number, number], bricks: 430, tiles: 260, trees: 7,
-    antialias: true, segments: 12,
-    shrubs: 22, flowers: 90, stones: 14,
+    dpr: [1, 1.6] as [number, number], bricks: 600, trees: 9, shadowMap: 1536,
+    antialias: true, segments: 12, shrubs: 90, flowers: 140,
   },
   high: {
-    dpr: [1, 1.9] as [number, number], bricks: 720, tiles: 420, trees: 10,
-    antialias: true, segments: 18,
-    shrubs: 34, flowers: 150, stones: 18,
+    dpr: [1, 1.9] as [number, number], bricks: 950, trees: 12, shadowMap: 2048,
+    antialias: true, segments: 18, shrubs: 140, flowers: 220,
   },
 } as const

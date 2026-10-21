@@ -1,230 +1,169 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import { M, LINE, goldSolid, makeContactShadow } from '../materials'
+import { M, LINE, goldSolid } from '../materials'
 import { Assembly, readProgress } from '../Assembly'
+import { boxGeo, planeGeo } from '../geometry'
 import { ease, span, clamp01 } from '../progress'
-import { PHASE, PLOT, HOUSE, POOL, SHED, HOUSE_CX, HOUSE_CZ, HOUSE_W, HOUSE_D, ROOF_Y } from '../schedule'
+import { PHASE } from '../schedule'
+import {
+  GROUND, FIRST, PAVILION, POOL, CARPORT, ENVELOPE, PLOT, GRID_X, GRID_Z, LEVEL_Y,
+  PAVILION_ROOF_Y, rectW, rectD, rectCX, rectCZ, type Rect,
+} from '../villa'
 
-/** Outline of a box, as gold linework. */
-function boxEdges(w: number, h: number, d: number) {
-  return new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d))
-}
-
-/** A closed rectangle lying on the ground at height y. */
-function rectOnGround(x0: number, x1: number, z0: number, z1: number, y = 0.02) {
-  const pts = [
-    new THREE.Vector3(x0, y, z0),
-    new THREE.Vector3(x1, y, z0),
-    new THREE.Vector3(x1, y, z1),
-    new THREE.Vector3(x0, y, z1),
-    new THREE.Vector3(x0, y, z0),
-  ]
-  return new THREE.BufferGeometry().setFromPoints(pts)
-}
+/** Outline of a box as line segments, centred on its own origin. */
+const edges = (w: number, h: number, d: number) => new THREE.EdgesGeometry(new THREE.BoxGeometry(w, h, d))
 
 /**
  * The ground, the site grid, the setting-out, and the ghost of the
  * finished scheme.
  *
- * The whole building is drawn in gold line before a single element is
+ * The whole villa is drawn in gold line before a single element is
  * cast — the drawing arrives first and the structure grows into it,
  * which is the one idea this animation exists to show. The ghost dims
  * as real geometry takes over.
  */
 export function Site() {
-  const shadowTex = useMemo(makeContactShadow, [])
-
-  const settingOut = useMemo(
-    () => rectOnGround(HOUSE.x0, HOUSE.x1, HOUSE.z0, HOUSE.z1),
-    [],
-  )
-
-  // Ghost massing: the finished volumes, in line only.
-  const ghost = useMemo(
-    () => ({
-      house: boxEdges(HOUSE_W, ROOF_Y, HOUSE_D),
-      pool: boxEdges(POOL.x1 - POOL.x0, POOL.depth, POOL.z1 - POOL.z0),
-      shed: boxEdges(SHED.x1 - SHED.x0, SHED.h, SHED.z1 - SHED.z0),
-    }),
-    [],
-  )
-
-  // Own copies so each line group can be faded independently.
   const mats = useMemo(
-    () => ({
-      setOut: LINE.gold.clone(),
-      ghost: LINE.ghost.clone(),
-      grid: LINE.grid.clone(),
-    }),
+    () => ({ setOut: LINE.gold.clone(), ghost: LINE.ghost.clone(), grid: LINE.grid.clone() }),
     [],
   )
 
-  const stringLines = useMemo(() => {
-    const y = 1.05
-    const o = 1.1 // profile boards stand clear of the excavation
-    const c = [
-      new THREE.Vector3(HOUSE.x0 - o, y, HOUSE.z0 - o),
-      new THREE.Vector3(HOUSE.x1 + o, y, HOUSE.z0 - o),
-      new THREE.Vector3(HOUSE.x1 + o, y, HOUSE.z1 + o),
-      new THREE.Vector3(HOUSE.x0 - o, y, HOUSE.z1 + o),
-    ]
+  // Setting-out: the footprint and every gridline, run past the building
+  // to the profile boards, the way they are strung on site.
+  const settingOut = useMemo(() => {
+    const o = 1.6
     const pts: THREE.Vector3[] = []
-    for (let i = 0; i < 4; i++) {
-      pts.push(c[i], c[(i + 1) % 4])
-      // Diagonals: the check every setting-out crew actually pulls.
-      if (i < 2) pts.push(c[i], c[(i + 2) % 4])
-    }
+    const y = 0.03
+    for (const x of GRID_X) pts.push(new THREE.Vector3(x, y, GRID_Z[0] - o), new THREE.Vector3(x, y, GRID_Z[GRID_Z.length - 1] + o))
+    for (const z of GRID_Z) pts.push(new THREE.Vector3(GRID_X[0] - o, y, z), new THREE.Vector3(GRID_X[GRID_X.length - 1] + o, y, z))
+    // Diagonals: the check every setting-out crew actually pulls.
+    pts.push(
+      new THREE.Vector3(GROUND.x0, y, GROUND.z0), new THREE.Vector3(GROUND.x1, y, GROUND.z1),
+      new THREE.Vector3(GROUND.x1, y, GROUND.z0), new THREE.Vector3(GROUND.x0, y, GROUND.z1),
+    )
     return new THREE.BufferGeometry().setFromPoints(pts)
   }, [])
 
-  const pegPositions = useMemo(() => {
-    const o = 1.1
-    return [
-      [HOUSE.x0 - o, HOUSE.z0 - o],
-      [HOUSE.x1 + o, HOUSE.z0 - o],
-      [HOUSE.x1 + o, HOUSE.z1 + o],
-      [HOUSE.x0 - o, HOUSE.z1 + o],
-    ] as const
+  const pegs = useMemo(() => {
+    const o = 1.6
+    const out: [number, number][] = []
+    for (const x of GRID_X) out.push([x, GRID_Z[0] - o], [x, GRID_Z[GRID_Z.length - 1] + o])
+    for (const z of GRID_Z) out.push([GRID_X[0] - o, z], [GRID_X[GRID_X.length - 1] + o, z])
+    return out
   }, [])
 
-  const settingRef = useRef<THREE.LineLoop>(null!)
+  // Ghost massing: every finished volume, in line only.
+  const ghost = useMemo(() => {
+    const vol = (r: Rect, y0: number, y1: number) => ({
+      geo: edges(rectW(r), y1 - y0, rectD(r)),
+      pos: [rectCX(r), (y0 + y1) / 2, rectCZ(r)] as [number, number, number],
+    })
+    return [
+      vol(GROUND, 0, LEVEL_Y[1]),
+      vol(FIRST, LEVEL_Y[1], LEVEL_Y[2]),
+      vol(PAVILION, LEVEL_Y[2], PAVILION_ROOF_Y),
+      vol(CARPORT, 0, CARPORT.top),
+      vol(POOL, -POOL.depth, 0),
+    ]
+  }, [])
+
+  const setRef = useRef<THREE.LineSegments>(null!)
   const ghostRef = useRef<THREE.Group>(null!)
   const gridRef = useRef<THREE.GridHelper>(null!)
   const patchRef = useRef<THREE.Mesh>(null!)
+  const pegsRef = useRef<THREE.Group>(null!)
 
   useFrame(() => {
     const p = readProgress()
 
     // Setting-out lines: struck early, gone once the frame is up.
-    const on = ease(span(p, PHASE.site))
-    const off = ease(span(p, PHASE.columns))
-    mats.setOut.opacity = clamp01(on * (1 - off)) * 0.9
-    if (settingRef.current) settingRef.current.visible = mats.setOut.opacity > 0.01
+    mats.setOut.opacity = clamp01(ease(span(p, PHASE.site)) * (1 - ease(span(p, PHASE.frame, 0, 0.4)))) * 0.9
+    if (setRef.current) setRef.current.visible = mats.setOut.opacity > 0.01
 
-    // Ghost massing: strongest while the shell is going up, then
-    // retired once the real roof lands on it.
-    const gOn = ease(span(p, PHASE.site))
-    const gOff = ease(span(p, PHASE.roof, 0.4, 0.6))
-    mats.ghost.opacity = clamp01(gOn * (1 - gOff)) * 0.26
+    // Ghost massing: strongest while the shell goes up, retired once
+    // the render coat has made the real volumes legible.
+    mats.ghost.opacity = clamp01(ease(span(p, PHASE.site)) * (1 - ease(span(p, PHASE.finishes)))) * 0.3
     if (ghostRef.current) ghostRef.current.visible = mats.ghost.opacity > 0.01
 
-    // Site grid stays, quietly, all the way to handover.
-    const grOff = ease(span(p, PHASE.landscape))
-    mats.grid.opacity = clamp01(ease(span(p, PHASE.site)) * (1 - grOff * 0.75)) * 0.18
+    // The site grid stays, quietly, until the garden covers it.
+    mats.grid.opacity = clamp01(ease(span(p, PHASE.site)) * (1 - ease(span(p, PHASE.landscape)))) * 0.2
     if (gridRef.current) gridRef.current.visible = mats.grid.opacity > 0.01
+
+    // Profile boards come out once the walls are being laid.
+    if (pegsRef.current) pegsRef.current.visible = p < PHASE.walls[0]
 
     // The pool opening stays covered until the dig begins.
     if (patchRef.current) patchRef.current.visible = p < PHASE.pool[0]
   })
 
-  // The ground is cut around the pool. Without the hole the pool is a
-  // frame painted on a solid floor: you never see that it was dug.
+  // The ground is cut around the pool, so the dig reads as a dig.
   const groundGeo = useMemo(() => {
-    // Wide enough that its edge never appears inside the fog.
-    const w = 420
-    const d = 420
+    const s = 520
     const shape = new THREE.Shape([
-      new THREE.Vector2(-w / 2, -d / 2),
-      new THREE.Vector2(w / 2, -d / 2),
-      new THREE.Vector2(w / 2, d / 2),
-      new THREE.Vector2(-w / 2, d / 2),
+      new THREE.Vector2(-s / 2, -s / 2), new THREE.Vector2(s / 2, -s / 2),
+      new THREE.Vector2(s / 2, s / 2), new THREE.Vector2(-s / 2, s / 2),
     ])
-    const hole = new THREE.Path([
-      new THREE.Vector2(POOL.x0, -POOL.z1),
-      new THREE.Vector2(POOL.x1, -POOL.z1),
-      new THREE.Vector2(POOL.x1, -POOL.z0),
-      new THREE.Vector2(POOL.x0, -POOL.z0),
-    ])
-    shape.holes.push(hole)
+    shape.holes.push(
+      new THREE.Path([
+        new THREE.Vector2(POOL.x0, -POOL.z1), new THREE.Vector2(POOL.x1, -POOL.z1),
+        new THREE.Vector2(POOL.x1, -POOL.z0), new THREE.Vector2(POOL.x0, -POOL.z0),
+      ]),
+    )
+    // ShapeGeometry's UVs are its own coordinates: metres already.
     return new THREE.ShapeGeometry(shape)
   }, [])
 
+  const gridSize = Math.ceil(Math.max(rectW(PLOT), rectD(PLOT)) + 8)
+
   return (
     <group>
-      {/* Ground, cut around the pool */}
-      <mesh
-        geometry={groundGeo}
-        rotation-x={-Math.PI / 2}
-        position-y={-0.02}
-        material={M.ground}
-      />
-
-      {/* The hole in the ground is permanent geometry, so it is kept
-          covered until the machine actually arrives to dig it. */}
+      <mesh geometry={groundGeo} rotation-x={-Math.PI / 2} position-y={-0.02} material={M.ground} />
       <mesh
         ref={patchRef}
         rotation-x={-Math.PI / 2}
-        position={[
-          (POOL.x0 + POOL.x1) / 2,
-          -0.019,
-          (POOL.z0 + POOL.z1) / 2,
-        ]}
+        position={[rectCX(POOL), -0.019, rectCZ(POOL)]}
+        geometry={planeGeo(rectW(POOL), rectD(POOL))}
         material={M.ground}
-      >
-        <planeGeometry args={[POOL.x1 - POOL.x0, POOL.z1 - POOL.z0]} />
-      </mesh>
+      />
 
-      {/* Soft contact shading under the building mass. */}
-      <mesh rotation-x={-Math.PI / 2} position={[HOUSE_CX, 0.012, HOUSE_CZ]}>
-        <planeGeometry args={[HOUSE_W * 2.1, HOUSE_D * 2.3]} />
-        <meshBasicMaterial map={shadowTex} transparent opacity={0.85} depthWrite={false} />
-      </mesh>
-
-      {/* Site grid — one square per metre of setting-out. */}
       <gridHelper
         ref={gridRef}
-        args={[PLOT.w + 12, PLOT.w + 12]}
-        position-y={0.005}
+        args={[gridSize, gridSize]}
+        position={[rectCX(PLOT), 0.006, rectCZ(PLOT)]}
         material={mats.grid}
       />
 
-      {/* Setting-out rectangle */}
-      <lineLoop ref={settingRef} geometry={settingOut} material={mats.setOut} />
+      <lineSegments ref={setRef} geometry={settingOut} material={mats.setOut} />
 
-      {/* Profile boards, pegs and string lines */}
-      <Assembly window={PHASE.site} mode="rise">
-        <lineSegments geometry={stringLines} material={mats.setOut} />
-        {pegPositions.map(([x, z], i) => (
-          <group key={i} position={[x, 0, z]}>
-            <mesh position-y={0.55} material={M.timber}>
-              <boxGeometry args={[0.09, 1.1, 0.09]} />
-            </mesh>
-            <mesh position-y={1.16} material={goldSolid}>
-              <sphereGeometry args={[0.075, 8, 6]} />
-            </mesh>
-          </group>
-        ))}
+      {/* Profile boards with gold survey nails. */}
+      <Assembly window={PHASE.site}>
+        <group ref={pegsRef}>
+          {pegs.map(([x, z], i) => (
+            <group key={i} position={[x, 0, z]}>
+              <mesh position-y={0.5} geometry={boxGeo(0.08, 1, 0.08)} material={M.timber} />
+              <mesh position-y={1.05} material={goldSolid}>
+                <sphereGeometry args={[0.07, 8, 6]} />
+              </mesh>
+            </group>
+          ))}
+        </group>
       </Assembly>
 
-      {/* Ghost of the finished scheme */}
       <group ref={ghostRef}>
-        <lineSegments
-          geometry={ghost.house}
-          material={mats.ghost}
-          position={[HOUSE_CX, ROOF_Y / 2, HOUSE_CZ]}
-        />
-        <lineSegments
-          geometry={ghost.pool}
-          material={mats.ghost}
-          position={[(POOL.x0 + POOL.x1) / 2, -POOL.depth / 2, (POOL.z0 + POOL.z1) / 2]}
-        />
-        <lineSegments
-          geometry={ghost.shed}
-          material={mats.ghost}
-          position={[(SHED.x0 + SHED.x1) / 2, SHED.h / 2, (SHED.z0 + SHED.z1) / 2]}
-        />
+        {ghost.map((g, i) => (
+          <lineSegments key={i} geometry={g.geo} material={mats.ghost} position={g.pos} />
+        ))}
       </group>
 
       {/* Excavation: the reduced-level dig under the footprint. */}
       <Assembly window={PHASE.excavate} mode="fade">
         <mesh
           rotation-x={-Math.PI / 2}
-          position={[HOUSE_CX, 0.008, HOUSE_CZ]}
+          position={[rectCX(ENVELOPE), 0.008, rectCZ(ENVELOPE)]}
+          geometry={planeGeo(rectW(ENVELOPE) + 2, rectD(ENVELOPE) + 2)}
           material={M.screed}
-        >
-          <planeGeometry args={[HOUSE_W + 2.2, HOUSE_D + 2.2]} />
-        </mesh>
+        />
       </Assembly>
     </group>
   )

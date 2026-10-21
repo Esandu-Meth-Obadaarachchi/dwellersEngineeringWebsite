@@ -6,11 +6,14 @@ import { tierBudget, type DeviceTier } from '../hooks/useDeviceTier'
 import { Site } from './parts/Site'
 import { Structure } from './parts/Structure'
 import { Walls } from './parts/Walls'
+import { Finishes } from './parts/Finishes'
 import { Roof } from './parts/Roof'
 import { Glazing } from './parts/Glazing'
+import { Interior } from './parts/Interior'
 import { Pool } from './parts/Pool'
-import { Shed } from './parts/Shed'
+import { Carport } from './parts/Carport'
 import { Landscape } from './parts/Landscape'
+import { Lighting } from './parts/Lighting'
 import { Rig } from './parts/Rig'
 
 export type BuildSceneProps = {
@@ -24,53 +27,52 @@ export type BuildSceneProps = {
 /**
  * The scroll-driven build.
  *
- * Everything below is procedural: no models, no textures, nothing
- * fetched. The whole scene is a few hundred kilobytes of arithmetic,
- * which is what makes it viable on the phones this company's clients
- * will actually open it on.
+ * Everything below is procedural: no models and no image files. Every
+ * texture is painted onto a canvas at load and the reflections come from
+ * an environment generated in code, so the whole scene is a few hundred
+ * kilobytes of arithmetic, which is what makes it viable on the phones
+ * this company's clients will actually open it on.
  */
-export default function BuildScene({
-  progress,
-  tier,
-  reducedMotion,
-  active,
-}: BuildSceneProps) {
+export default function BuildScene({ progress, tier, reducedMotion, active }: BuildSceneProps) {
   const budget = tierBudget[tier]
 
   return (
-    <>
-      <Canvas
-        // Rendering stops dead when the section is off screen.
-        frameloop={active ? 'always' : 'never'}
-        dpr={budget.dpr}
-        gl={{
-          antialias: budget.antialias,
-          powerPreference: 'high-performance',
-          alpha: true,
-          stencil: false,
-          depth: true,
-        }}
-        camera={{ fov: 38, near: 0.5, far: 320, position: [24, 6, 22] }}
-        onCreated={({ gl, scene }) => {
-          gl.toneMapping = THREE.ACESFilmicToneMapping
-          gl.toneMappingExposure = 1.05
-          scene.fog = new THREE.Fog('#050505', 52, 155)
-        }}
-      >
-        <ProgressBridge source={progress} />
-        <Rig reducedMotion={reducedMotion} />
+    <Canvas
+      // Rendering stops dead when the section is off screen.
+      frameloop={active ? 'always' : 'never'}
+      dpr={budget.dpr}
+      shadows={budget.shadowMap > 0 ? 'soft' : false}
+      gl={{
+        antialias: budget.antialias,
+        powerPreference: 'high-performance',
+        alpha: true,
+        stencil: false,
+        depth: true,
+      }}
+      camera={{ fov: 38, near: 0.5, far: 420, position: [44, 20, 48] }}
+      onCreated={({ gl, scene }) => {
+        gl.toneMapping = THREE.ACESFilmicToneMapping
+        gl.toneMappingExposure = 1.0
+        scene.fog = new THREE.Fog('#050505', 75, 210)
+      }}
+    >
+      <ProgressBridge source={progress} />
+      <Rig reducedMotion={reducedMotion} />
 
-        <Suspense fallback={null}>
-          <Site />
-          <Structure segments={budget.segments} />
-          <Walls budget={budget.bricks} />
-          <Roof budget={budget.tiles} />
-          <Glazing />
-          <Pool segments={budget.segments} />
-          <Shed />
-          <Landscape trees={budget.trees} shrubs={budget.shrubs} flowers={budget.flowers} stones={budget.stones} />
-        </Suspense>
-      </Canvas>
-    </>
+      <Suspense fallback={null}>
+        <Site />
+        <Structure segments={budget.segments} />
+        <Walls budget={budget.bricks} />
+        <Finishes />
+        <Roof />
+        <Glazing />
+        <Interior />
+        <Pool segments={budget.segments} />
+        <Carport />
+        <Landscape trees={budget.trees} shrubs={budget.shrubs} flowers={budget.flowers} />
+        {/* Last, so its shadow pass sees every mesh above. */}
+        <Lighting shadowMap={budget.shadowMap} reducedMotion={reducedMotion} />
+      </Suspense>
+    </Canvas>
   )
 }
