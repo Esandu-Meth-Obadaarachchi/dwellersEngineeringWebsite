@@ -6,7 +6,7 @@ import { Nav } from './Nav'
 import { Footer } from './Footer'
 
 /**
- * The frame every page sits in: skip link, drawing frame, nav, footer.
+ * The frame every page sits in: skip link, nav, footer.
  *
  * It also does the three jobs a browser does for free on a real page
  * load but not on a client-side route change: put the scroll position
@@ -61,9 +61,6 @@ export function Layout() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-
-      {/* The drawing frame sits over everything and is inert. */}
-      <div className="sheet-frame" aria-hidden="true" />
 
       <Nav />
 

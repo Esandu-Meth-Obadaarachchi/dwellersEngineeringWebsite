@@ -9,37 +9,6 @@
    content it sits beside.
    ============================================================ */
 
-/* --- 1. The sheet frame ------------------------------------
-   A hairline border inset from the viewport, with registration
-   ticks at each corner. Fixed, so the whole site reads as one
-   continuous drawing being scrolled past. */
-
-.sheet-frame {
-  position: fixed;
-  inset: var(--sheet-pad);
-  z-index: var(--z-frame);
-  pointer-events: none;
-  border: 1px solid color-mix(in srgb, var(--bronze) 26%, transparent);
-}
-
-.sheet-frame::before,
-.sheet-frame::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  /* Corner registration ticks: short strokes that overrun the corners. */
-  background:
-    linear-gradient(var(--bronze), var(--bronze)) 0 0 / 1px 18px no-repeat,
-    linear-gradient(var(--bronze), var(--bronze)) 0 0 / 18px 1px no-repeat,
-    linear-gradient(var(--bronze), var(--bronze)) 100% 0 / 1px 18px no-repeat,
-    linear-gradient(var(--bronze), var(--bronze)) 100% 0 / 18px 1px no-repeat;
-}
-.sheet-frame::after { transform: scaleY(-1); }
-
-@media (max-width: 40rem) {
-  .sheet-frame { display: none; }
-}
-
 /* --- 2. Technical label ------------------------------------
    The mono utility voice. Used for eyebrows, annotations,
    dimensions and any number the reader is meant to trust. */

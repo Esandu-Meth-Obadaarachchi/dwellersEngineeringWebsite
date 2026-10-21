@@ -42,7 +42,7 @@
 
   /* --- Space ----------------------------------------------- */
   --gutter:     clamp(1.125rem, 4vw, 4.5rem);
-  --sheet-pad:  clamp(1rem, 2.2vw, 2rem); /* inset of the drawing frame */
+  --sheet-pad:  clamp(1rem, 2.2vw, 2rem); /* inset of the side rail from the viewport edge */
   --band:       clamp(4.5rem, 11vh, 9.5rem); /* vertical section rhythm */
   --max:        84rem;
 
@@ -58,7 +58,6 @@
   --dur:       420ms;
   --dur-slow:  900ms;
 
-  --z-frame: 40;
   --z-menu:  70;
   /* The bar sits above the open menu: it carries the close control. */
   --z-nav:   80;
