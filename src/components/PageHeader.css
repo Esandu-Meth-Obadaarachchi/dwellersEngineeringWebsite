@@ -28,7 +28,7 @@
   flex-wrap: wrap;
   gap: 0.6rem;
   color: var(--bone-3);
-  margin-block-end: clamp(1rem, 2.5vh, 1.5rem);
+  align-items: baseline;
   animation: rise-in 700ms var(--ease-out) both;
 }
 
@@ -38,41 +38,22 @@
 }
 .page-head__crumb a:hover { color: var(--gold); }
 
-.page-head__title {
-  display: flex;
-  align-items: flex-start;
-  gap: clamp(0.75rem, 2.5vw, 2rem);
-}
+.page-head__no { color: var(--bronze-dim); }
 
-.page-head__no {
-  font-family: var(--font-tech);
-  font-weight: 300;
-  font-size: clamp(0.9rem, 1.6vw, 1.3rem);
-  line-height: 1;
-  color: var(--bronze-dim);
-  padding-block-start: 0.35em;
-  font-variant-numeric: tabular-nums;
-}
-
+/* The page name: the current crumb, in the same mono voice, set a
+   step brighter so it reads as where you are. */
 .page-head h1 {
-  /* A page label, not a hero: kept below the section titles' scale so
-     the content starts within the first screen. */
-  font-size: clamp(1.9rem, 4.2vw, 3.4rem);
-  line-height: 0.9;
-  letter-spacing: -0.035em;
-  font-weight: 900;
-  font-stretch: 112%;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
   color: var(--bone);
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
-  animation: line-up 1000ms var(--ease-out) both 80ms;
 }
 
 .page-head h1:focus { outline: none; }
 
 .page-head__dim {
   max-width: 54rem;
-  margin-block-start: clamp(0.9rem, 2.5vh, 1.4rem);
+  margin-block-start: clamp(1rem, 2.5vh, 1.5rem);
   animation: rise-in 900ms var(--ease-out) both 260ms;
 }
 
@@ -131,7 +112,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .page-head__crumb,
-  .page-head h1,
   .page-head__dim,
   .page-head__jump { animation: none; }
 }
