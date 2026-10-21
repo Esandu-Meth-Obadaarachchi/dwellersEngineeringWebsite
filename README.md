@@ -80,7 +80,7 @@ The visual language is taken from the company's own profile booklet: black,
 signal gold `#FFDE59`, crest bronze `#B29629`, and the lion crest.
 
 Every structural device on the page is borrowed from a real structural drawing
-sheet — the sheet frame, the title block, grid bubbles down the margin,
+sheet — the title block, grid bubbles down the margin,
 dimension strings, and 45° section hatching. Each one carries a value that is
 actually true of the content beside it rather than decorating it.
 
