@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { company } from '../data/company'
+import { Link } from 'react-router'
 import { Crest } from './Crest'
+import { Arrow } from './Arrow'
 import './Hero.css'
 
 /**
@@ -86,17 +88,15 @@ export function Hero() {
             handover.
           </p>
 
-          <a className="hero__cta" href="#contact">
-            <span>Start a project</span>
-            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-              <path
-                d="M4 12h15m0 0-6-6m6 6-6 6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-              />
-            </svg>
-          </a>
+          <div className="hero__actions btn-row">
+            <Link className="btn btn--solid" to="/contact">
+              <span>Start a project</span>
+              <Arrow />
+            </Link>
+            <Link className="btn btn--line" to="/services">
+              <span>Our services</span>
+            </Link>
+          </div>
         </div>
       </div>
 

@@ -11,12 +11,68 @@ construction company based in Angoda, Sri Lanka.
 | --- | --- |
 | Build | Vite 5 + TypeScript |
 | UI | React 18 |
+| Routing | React Router 7 (library mode, `BrowserRouter`) |
 | 3D | three.js via react-three-fiber |
 | Motion | CSS transitions and keyframes, driven by one `IntersectionObserver` |
 | Styling | Hand-authored CSS with custom properties — no framework |
 
 There is no animation library and no UI framework. The only runtime
-dependencies are React and three.js.
+dependencies are React, React Router and three.js.
+
+## Pages
+
+The site is a drawing set: each page is a sheet with its own number,
+and each section on a page is a gridline lettered A, B, C.
+
+| Sheet | Path | Sections |
+| --- | --- | --- |
+| 01 | `/` | Hero, 3D build, overview, sheet index, enquiry band |
+| 02 | `/company` | Profile, values, sustainability |
+| 03 | `/services` | Disciplines, six-stage method |
+| 04 | `/leadership` | Directors, technical expertise, our people |
+| 05 | `/contact` | Enquiry form, office |
+| — | `/projects` | Portfolio (hidden until it has projects) |
+
+`src/data/site.ts` is the single register for all of it. The top bar,
+the side rail, the mobile menu, the title blocks, the home index, the
+footer and the "next sheet" link all read from it, so adding or
+reordering a page is one edit there plus a `<Route>` in `src/App.tsx`.
+
+Navigation works in three layers:
+
+- **Top bar** (wide screens): one link per page, Contact drawn as a button.
+- **Side rail** (wide screens): the sections of the current page, with the
+  one in view filled gold. Hover a bubble to see its name.
+- **Menu** (phones and tablets): the page list, plus "On this sheet" jump
+  links in each page header, since a phone has no margin for the rail.
+
+On a route change `src/components/Layout.tsx` does what a full page load
+would: scrolls to the top (or to the `#anchor`), updates the title and
+meta description, and moves focus to the new page's heading for screen
+readers.
+
+## Adding projects
+
+`/projects` is built and routed but stays out of the nav, the menu and
+the home index while `src/data/projects.ts` is empty, so visitors never
+see an unfinished page. Add the first entry and it appears everywhere,
+numbered in order before Contact:
+
+```ts
+export const projects: Project[] = [
+  {
+    slug: 'angoda-residence',
+    title: 'Two-storey residence',
+    location: 'Angoda',
+    year: '2025',
+    category: 'Building Construction and Renovation',
+    summary: 'One or two sentences on the scope and the result.',
+    cover: '/assets/img/projects/angoda-residence', // .webp and .jpg
+  },
+]
+```
+
+The discipline filter appears once there is more than one category.
 
 ## Design
 
@@ -101,12 +157,14 @@ gold, bronze or bone without a second request.
 
 ## Measured
 
-On a production build, throttled to 4× slower CPU and ~1.6 Mbps:
+On a production build, throttled to 4× slower CPU and ~1.6 Mbps (first
+contentful paint was measured before the multi-page split and should be
+re-measured):
 
 | | |
 | --- | --- |
 | First contentful paint | ~0.96 s |
-| First load, gzipped (HTML + CSS + app + React) | ~69 kB |
+| First load, gzipped (HTML + CSS + app + React + router) | ~89 kB |
 | 3D chunk, gzipped — requested after first paint | ~216 kB |
 
 Per animation frame, while scrubbing the entire build sequence:
@@ -139,8 +197,9 @@ netlify deploy --prod --dir=dist
 ```
 
 `netlify.toml` sets the build command, fingerprinted-asset caching (a year,
-immutable) against an always-revalidated document, and the usual security
-headers.
+immutable) against an always-revalidated document, the usual security
+headers, and a `/* → /index.html` rewrite so a direct visit or refresh on
+`/services` loads the app instead of a Netlify 404.
 
 Live at https://dwellers-engineering.netlify.app — a custom domain can be
 pointed at it from the project's Domain management settings.

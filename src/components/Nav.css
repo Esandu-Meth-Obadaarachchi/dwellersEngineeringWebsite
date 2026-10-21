@@ -109,6 +109,78 @@
 .nav__toggle-bars[data-open='true'] span:first-child { transform: translateY(3px) rotate(45deg); }
 .nav__toggle-bars[data-open='true'] span:last-child  { transform: translateY(-3px) rotate(-45deg); }
 
+/* --- Page links (wide screens) -------------------------------- */
+
+.nav__links { display: none; margin-inline: auto; }
+
+.nav__links ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.25rem, 1.2vw, 1rem);
+}
+
+.nav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.7rem 0.6rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-stretch: 112%;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: var(--bone-2);
+  transition: color var(--dur) var(--ease-out);
+}
+
+.nav__link-no { color: var(--bronze-dim); transition: color var(--dur) var(--ease-out); }
+
+/* The current sheet is underlined with a measured rule, drawn in from
+   the left the same way the service rows are dimensioned. */
+.nav__link::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0.6rem;
+  inset-block-end: 0.3rem;
+  block-size: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-in-out);
+}
+
+.nav__link:hover,
+.nav__link.active { color: var(--bone); }
+.nav__link:hover .nav__link-no,
+.nav__link.active .nav__link-no { color: var(--gold); }
+.nav__link:hover::after,
+.nav__link.active::after { transform: scaleX(1); }
+
+/* Contact is the one action in the bar, so it is drawn as a button. */
+.nav__link--cta {
+  margin-inline-start: 0.5rem;
+  padding-inline: 1.1rem;
+  border: 1px solid var(--bronze);
+  color: var(--gold);
+}
+
+.nav__link--cta::after { display: none; }
+
+.nav__link--cta:hover,
+.nav__link--cta.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #000;
+}
+
+.nav__link--cta:hover .nav__link-no,
+.nav__link--cta.active .nav__link-no { color: #000; }
+
 /* --- Gridline rail ------------------------------------------- */
 
 .rail {
@@ -121,6 +193,27 @@
 }
 
 .rail ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+
+/* The sheet number heads its own gridlines, joined to them by a
+   dashed setting-out line. */
+.rail__sheet {
+  inline-size: 2.125rem;
+  text-align: center;
+  color: var(--bronze-dim);
+  padding-block-end: 0.6rem;
+  margin-block-end: 0.6rem;
+  position: relative;
+}
+
+.rail__sheet::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 50%;
+  inline-size: 1px;
+  block-size: 0.45rem;
+  background: var(--bronze-dim);
+}
 
 .rail a {
   display: flex;
@@ -198,6 +291,7 @@
 }
 
 .menu__grid { color: var(--gold); }
+.menu ul a.active .menu__label { color: var(--gold); }
 .menu__sheet { color: var(--bone-3); }
 
 .menu__label {
@@ -236,4 +330,16 @@
   .rail { display: block; }
   .nav__toggle { display: none; }
   .menu { display: none !important; }
+
+  /* With the pages in the bar and the sections in the rail, the
+     sheet readout and the phone number have nowhere left to go. */
+  .nav__links { display: block; }
+  .nav__sheet,
+  .nav__call { display: none; }
+}
+
+/* The full phone number returns once there is room for it beside
+   the page links. */
+@media (min-width: 90rem) {
+  .nav__call { display: block; margin-inline-start: 0; }
 }

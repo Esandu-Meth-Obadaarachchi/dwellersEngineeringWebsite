@@ -1,33 +1,42 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { sections, company } from '../data/company'
+import { Link, NavLink, useLocation } from 'react-router'
+import { company } from '../data/company'
+import { pages, pageFor } from '../data/site'
 import { useActiveSection } from '../hooks/useActiveSection'
 import { Crest } from './Crest'
 import './Nav.css'
 
 /**
- * The gridline navigator.
+ * Navigation, in three parts.
  *
- * On a wide screen the nav is the column grid running down the left
- * margin: one bubble per sheet, lettered A–H, with the active gridline
- * filled. On a narrow screen it collapses to a single bar and a sheet
- * index, because a margin is not something a phone has.
+ * The bar carries the pages: one link per sheet in the drawing set.
+ * The gridline rail down the left margin carries the sections of the
+ * sheet you are on, lettered A, B, C, with the active gridline filled.
+ * On a narrow screen both fold into a single bar and a sheet index,
+ * because a margin is not something a phone has.
  */
 export function Nav() {
-  const ids = useMemo(() => sections.map((s) => s.id), [])
+  const { pathname } = useLocation()
+  const page = pageFor(pathname)
+  const isHome = page?.path === '/'
+
+  const ids = useMemo(() => page?.sections.map((s) => s.id) ?? [], [page])
   const active = useActiveSection(ids)
   const [open, setOpen] = useState(false)
-  const [lifted, setLifted] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const panel = useRef<HTMLElement>(null)
   const toggle = useRef<HTMLButtonElement>(null)
 
-  // The bar only gains its background once the hero is behind it.
+  // On the home page the bar only gains its background once the hero
+  // is behind it. Every other sheet opens on a plain header, so the bar
+  // is solid from the start.
   useEffect(() => {
     let frame = 0
     const onScroll = () => {
       if (frame) return
       frame = requestAnimationFrame(() => {
         frame = 0
-        setLifted(window.scrollY > window.innerHeight * 0.65)
+        setScrolled(window.scrollY > window.innerHeight * 0.65)
       })
     }
     onScroll()
@@ -37,6 +46,9 @@ export function Nav() {
       window.removeEventListener('scroll', onScroll)
     }
   }, [])
+
+  // A new page always arrives with the menu shut.
+  useEffect(() => setOpen(false), [pathname])
 
   // Escape closes the menu; focus returns to the toggle.
   useEffect(() => {
@@ -67,23 +79,45 @@ export function Nav() {
     wasOpen.current = open
   }, [open])
 
-  const activeMeta = sections.find((s) => s.id === active) ?? sections[0]
+  const activeSection = page?.sections.find((s) => s.id === active) ?? page?.sections[0]
+  const lifted = !isHome || scrolled
+  const barPages = pages.filter((p) => p.path !== '/')
 
   return (
     <>
       {/* --- Top bar ----------------------------------------- */}
       <header className="nav" data-lifted={lifted || undefined}>
-        <a className="nav__brand" href="#top">
+        <Link className="nav__brand" to="/">
           <Crest className="nav__crest" />
           <span className="nav__brand-name">
             Dwellers <span>Engineering</span>
           </span>
-        </a>
+        </Link>
 
-        <p className="nav__sheet tech" aria-hidden="true">
-          <span className="nav__sheet-grid">{activeMeta.grid}</span>
-          Sheet {activeMeta.sheet} — {activeMeta.nav}
-        </p>
+        {page && activeSection && (
+          <p className="nav__sheet tech" aria-hidden="true">
+            <span className="nav__sheet-grid">{activeSection.grid}</span>
+            Sheet {activeSection.sheet} — {page.nav} / {activeSection.nav}
+          </p>
+        )}
+
+        <nav className="nav__links" aria-label="Pages">
+          <ul>
+            {barPages.map((p) => (
+              <li key={p.path}>
+                <NavLink
+                  to={p.path}
+                  className={p.path === '/contact' ? 'nav__link nav__link--cta' : 'nav__link'}
+                >
+                  <span className="nav__link-no tech" aria-hidden="true">
+                    {p.sheet}
+                  </span>
+                  {p.nav}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         <a className="nav__call tech" href={`tel:${company.phoneHref}`}>
           {company.phone}
@@ -106,37 +140,48 @@ export function Nav() {
       </header>
 
       {/* --- Gridline rail (wide screens) --------------------- */}
-      <nav className="rail" aria-label="Section grid">
-        <ul>
-          {sections.map((s) => (
-            <li key={s.id}>
-              <a href={`#${s.id}`} data-active={s.id === active}>
-                <span className="bubble" data-active={s.id === active}>
-                  {s.grid}
-                </span>
-                <span className="rail__label tech">{s.nav}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      {page && (
+        <nav className="rail" aria-label={`Sections of ${page.nav}`}>
+          <p className="rail__sheet tech" aria-hidden="true">
+            {page.sheet}
+          </p>
+          <ul>
+            {page.sections.map((s) => (
+              <li key={s.id}>
+                <a
+                  href={`#${s.id}`}
+                  data-active={s.id === active}
+                  aria-current={s.id === active ? 'location' : undefined}
+                >
+                  <span className="bubble" data-active={s.id === active}>
+                    {s.grid}
+                  </span>
+                  <span className="rail__label tech">{s.nav}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
 
       {/* --- Menu (narrow screens) ---------------------------- */}
       <nav
         id="nav-menu"
         className="menu"
-        aria-label="Sections"
+        aria-label="Pages"
         ref={panel}
         hidden={!open}
       >
         <ul>
-          {sections.map((s, i) => (
-            <li key={s.id} style={{ '--i': i } as React.CSSProperties}>
-              <a href={`#${s.id}`} onClick={() => setOpen(false)}>
-                <span className="tech menu__grid">{s.grid}</span>
-                <span className="menu__label">{s.nav}</span>
-                <span className="tech menu__sheet">{s.sheet}</span>
-              </a>
+          {pages.map((p, i) => (
+            <li key={p.path} style={{ '--i': i } as React.CSSProperties}>
+              <NavLink to={p.path} onClick={() => setOpen(false)} end>
+                <span className="tech menu__grid">{p.sheet}</span>
+                <span className="menu__label">{p.nav}</span>
+                <span className="tech menu__sheet">
+                  {p.path === page?.path ? 'You are here' : ''}
+                </span>
+              </NavLink>
             </li>
           ))}
         </ul>

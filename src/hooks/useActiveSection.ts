@@ -13,6 +13,9 @@ export function useActiveSection(ids: readonly string[]): string {
   const [active, setActive] = useState(ids[0] ?? '')
 
   useEffect(() => {
+    // A new page brings a new set of sections; start from its first.
+    setActive(ids[0] ?? '')
+
     const els = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => Boolean(el))

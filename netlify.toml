@@ -30,3 +30,10 @@
     X-Frame-Options = "SAMEORIGIN"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+
+# Every path is a client-side route: serve the app shell and let the
+# router decide. Real files under /assets are matched first.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

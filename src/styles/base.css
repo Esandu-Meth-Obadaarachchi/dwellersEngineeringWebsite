@@ -111,6 +111,31 @@ p { text-wrap: pretty; }
 
 .section:first-of-type { border-block-start: 0; }
 
+/* --- Entrances ------------------------------------------------
+   Shared by the home hero and every inner page header. */
+
+@keyframes line-up {
+  from { transform: translateY(0.9em); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+@keyframes rise-in {
+  from { transform: translateY(1.2rem); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+/* A new page fades up rather than snapping in. */
+.page-enter { animation: page-in 520ms var(--ease-out) both; }
+
+@keyframes page-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter { animation: none; }
+}
+
 /* --- Scroll reveal ------------------------------------------- */
 
 .reveal {

@@ -1,0 +1,35 @@
+.not-found {
+  min-block-size: 80svh;
+  display: grid;
+  align-items: center;
+  padding-block: calc(var(--nav-h) + 3rem) var(--band);
+}
+
+.not-found h1 {
+  font-size: var(--t-h1);
+  margin-block: 1rem 1.25rem;
+}
+
+.not-found h1:focus { outline: none; }
+
+.not-found__text { color: var(--bone-2); max-width: 42ch; margin-block-end: 2rem; }
+
+.not-found__list {
+  list-style: none;
+  padding: 0;
+  margin-block-start: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+}
+
+.not-found__list a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding-block: 0.6rem;
+  color: var(--bone-2);
+  transition: color var(--dur) var(--ease-out);
+}
+
+.not-found__list a:hover { color: var(--gold); }

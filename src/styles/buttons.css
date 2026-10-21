@@ -1,0 +1,105 @@
+/* ============================================================
+   Buttons.
+
+   Two weights, one voice. The solid gold button is the primary
+   action on a screen and appears once; the line button is every
+   secondary route. Both speak in the mono drafting face.
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  min-block-size: 2.75rem;
+  padding: 0.95rem 1.6rem;
+  font-family: var(--font-tech);
+  font-size: var(--t-small);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  flex: none;
+  transition: color var(--dur) var(--ease-out),
+              border-color var(--dur) var(--ease-out),
+              background-color var(--dur) var(--ease-out);
+}
+
+.btn svg { flex: none; transition: transform var(--dur) var(--ease-out); }
+.btn:hover svg,
+.btn:focus-visible svg { transform: translateX(4px); }
+
+/* --- Solid: the one primary action ---------------------------- */
+
+.btn--solid {
+  background: var(--gold);
+  color: #000;
+  border: 1px solid var(--gold);
+}
+
+.btn--solid:hover,
+.btn--solid:focus-visible { background: var(--bone); border-color: var(--bone); }
+
+/* --- Line: gold wipes in from the left, like a highlighter ----- */
+
+.btn--line {
+  border: 1px solid var(--bronze);
+  color: var(--gold);
+}
+
+.btn--line::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-in-out);
+  z-index: -1;
+}
+
+.btn--line:hover,
+.btn--line:focus-visible { color: #000; border-color: var(--gold); }
+.btn--line:hover::before,
+.btn--line:focus-visible::before { transform: scaleX(1); }
+
+/* --- Quiet: a text link with a measured rule under it ---------- */
+
+.btn--quiet {
+  padding-inline: 0;
+  color: var(--bone-2);
+  overflow: visible;
+}
+
+.btn--quiet::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0.55rem;
+  block-size: 1px;
+  background: currentColor;
+  transform: scaleX(0.35);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-in-out);
+}
+
+.btn--quiet:hover,
+.btn--quiet:focus-visible { color: var(--gold); }
+.btn--quiet:hover::after,
+.btn--quiet:focus-visible::after { transform: scaleX(1); }
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+
+/* On a phone, stacked full-width buttons are easier to hit than a
+   wrapped row of uneven ones. */
+@media (max-width: 40rem) {
+  .btn-row { flex-direction: column; align-items: stretch; }
+  .btn-row .btn--quiet { align-self: center; }
+}
